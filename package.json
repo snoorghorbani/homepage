@@ -1,0 +1,30 @@
+{
+  "name": "threejs-typescript-webpack-starter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tweenjs/tween.js": "^17.2.0",
+    "@types/three": "0.92.13",
+    "@types/tweenjs": "^1.0.0",
+    "gsap": "^2.0.2",
+    "install": "^0.12.2",
+    "npm": "^6.7.0",
+    "pnltri": "^2.1.1",
+    "three": "0.94.0",
+    "three-bas": "^2.8.1",
+    "ts-loader": "4.4.2",
+    "typescript": "2.9.2"
+  },
+  "devDependencies": {
+    "webpack": "4.16.2",
+    "webpack-dev-server": "3.1.5",
+    "webpack-cli": "3.1.0"
+  }
+}
