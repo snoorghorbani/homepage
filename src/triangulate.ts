@@ -44,7 +44,7 @@ export const _text_animation = function (scene: any) {
         });
         tl.fromTo(textAnimation, 4,
             { animationProgress: 0.0 },
-            { animationProgress: 0.6, ease: Power1.easeInOut },
+            { animationProgress: 0.95, ease: Power1.easeInOut },
             0
         );
         tl.fromTo(textAnimation.rotation, 4, { y: 0 }, { y: Math.PI * 2, ease: Power1.easeInOut }, 0);
@@ -54,8 +54,8 @@ export const _text_animation = function (scene: any) {
 }
 
 function createTextAnimation(font) {
-    var geometry = generateTextGeometry('Animation four', {
-        size:40,
+    var geometry = generateTextGeometry('soushians', {
+        size:22,
         height:12,
         font:font,
         weight:'bold',
@@ -75,12 +75,13 @@ function createTextAnimation(font) {
     }
 
 function generateTextGeometry(text: string, params: any) {
-    // var geometry = new THREE.TextGeometry(text, params);
-    var geometry =  new THREE.SphereGeometry(20, 20, 20);
+    var geometry = new THREE.TextGeometry(text, params);
+    // var geometry =  new THREE.SphereGeometry(20, 20, 20);
 
     geometry.computeBoundingBox();
   
-    var size = geometry.boundingBox.size();
+    var size = new THREE.Vector3();
+    geometry.boundingBox.getSize(size);
     var anchorX = size.x * -params.anchor.x;
     var anchorY = size.y * -params.anchor.y;
     var anchorZ = size.z * -params.anchor.z;
@@ -159,7 +160,7 @@ function TextAnimation(textGeometry) {
     }
   
     var material = new BAS.PhongAnimationMaterial({
-        shading: THREE.FlatShading,
+        flatShading: true,
         side: THREE.DoubleSide,
         transparent: true,
         uniforms: {
@@ -168,7 +169,8 @@ function TextAnimation(textGeometry) {
         vertexFunctions: [
           BAS.ShaderChunk['cubic_bezier'],
           BAS.ShaderChunk['ease_out_cubic'],
-          BAS.ShaderChunk['quaternion_rotation']
+          BAS.ShaderChunk['quaternion_rotation'],
+          BAS.ShaderChunk['ease_back_in_out']
         ],
         vertexParameters: [
           'uniform float uTime;',
@@ -182,8 +184,8 @@ function TextAnimation(textGeometry) {
           'float tDelay = aAnimation.x;',
           'float tDuration = aAnimation.y;',
           'float tTime = clamp(uTime - tDelay, 0.0, tDuration);',
-          //'float tProgress = ease(tTime, 0.0, 1.0, tDuration);'
-           'float tProgress = tTime / tDuration;'
+        //   'float tProgress = cubicBezier(tTime, 0.0, 1.0, tDuration);'
+        'float tProgress = tTime / tDuration;'
         ],
         vertexPosition: [
           'transformed = mix(transformed, aEndPosition, tProgress);',

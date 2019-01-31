@@ -64,29 +64,29 @@ class App {
         var light = new THREE.PointLight(0xfff00f, 1, 1000);
         light.position.set(100, -100, 200);
         light.castShadow = true;
-        light.shadowMapWidth = 1024; // default is 512
-        light.shadowMapHeight = 1024;
-        this.scene.add(light);
+        light.shadow.mapSize.width = 1024; // default is 512
+        light.shadow.mapSize.height = 1024;
+        // this.scene.add(light);
     }
 
     private create_objects() {
-        var brickGeo = this.brickGeo = new THREE.SphereGeometry(20, 20, 20)
-        this.brick = new THREE.Mesh(brickGeo, new THREE.MeshNormalMaterial({ wireframe: false }));
+        // var brickGeo = this.brickGeo = new THREE.SphereGeometry(20, 20, 20)
+        // this.brick = new THREE.Mesh(brickGeo, new THREE.MeshNormalMaterial({ wireframe: false }));
 
-        this.brick.position.set(0, 0, 30);
-        this.brick.castShadow = true;
-        this.brick.receiveShadow = true;
-        this.scene.add(this.brick);
+        // this.brick.position.set(0, 0, 30);
+        // this.brick.castShadow = true;
+        // this.brick.receiveShadow = true;
+        // this.scene.add(this.brick);
 
-        this.plate = new THREE.Mesh(new THREE.PlaneGeometry(200, 200, 20, 20));
-        this.plate.material = new THREE.MeshLambertMaterial({ color: 0xff00ff });
-        this.plate.castShadow = true;
-        this.plate.receiveShadow = true;
-        this.scene.add(this.plate);
+        // this.plate = new THREE.Mesh(new THREE.PlaneGeometry(200, 200, 20, 20));
+        // this.plate.material = new THREE.MeshLambertMaterial({ color: 0xff00ff });
+        // this.plate.castShadow = true;
+        // this.plate.receiveShadow = true;
+        // this.scene.add(this.plate);
     }
 
     private setup_camera() {
-        this.camera.position.set(0, -500, 2);
+        this.camera.position.set(0, 0, 500);
         this.camera.lookAt(0, 0, 0);
         this.scene.add(this.camera);
     }
@@ -111,7 +111,7 @@ class App {
         requestAnimationFrame(() => { this.render() });
         this.adjustCanvasSize();
 
-        this.brick.rotateZ(0.03);
+        // this.brick.rotateZ(0.03);
         this.controls.update();
         // TWEEN.update();
     }
