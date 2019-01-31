@@ -17,7 +17,7 @@
     "install": "^0.12.2",
     "npm": "^6.7.0",
     "pnltri": "^2.1.1",
-    "three": "0.94.0",
+    "three": "^0.98.0",
     "three-bas": "^2.8.1",
     "ts-loader": "4.4.2",
     "typescript": "2.9.2"

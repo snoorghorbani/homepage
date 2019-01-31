@@ -1,7 +1,10 @@
-import * as THREE from 'three';
-import { OrbitControls } from './js/controls/OrbitControls';
+// import * as THREE from 'three';
+// import { OrbitControls } from './js/controls/OrbitControls';
 import { _text_animation } from './triangulate';
+import { multi_prefab } from './multi-prefab';
 declare const TWEEN: any;
+declare const THREE: any;
+// declare const OrbitControls: any;
 
 class App {
     private readonly renderer = new THREE.WebGLRenderer({ antialias: true, canvas: <HTMLCanvasElement>document.getElementById("mainCanvas") });
@@ -11,7 +14,7 @@ class App {
     private brick: THREE.Mesh;
     private brickGeo: THREE.Geometry;
     private plate: THREE.Mesh;
-    private controls: OrbitControls;
+    private controls: THREE.OrbitControls;
 
     constructor() {
 
@@ -25,12 +28,12 @@ class App {
         this.render();
 
         setTimeout(() => {
-            debugger
             _text_animation(this.scene)
             // this.move_camera()
+            // multi_prefab(this.scene);
             // this.scene.remove(this.brick)
 
-            // var mat = new THREE.MeshLambertMaterial()
+            // var mat = new THREE.MeshLambertMaterial({ flatShading: true })
 
             // var brekedGeo = this.breakdownGeometry(this.brickGeo)
             // var currentMesh = new THREE.Mesh(brekedGeo, mat)
@@ -67,9 +70,9 @@ class App {
     }
 
     private create_objects() {
-        var brickGeo = this.brickGeo =new THREE.BoxGeometry(20, 20, 20) 
-        this.brick = new THREE.Mesh(brickGeo);
-        this.brick.material = new THREE.MeshNormalMaterial({wireframe:true});
+        var brickGeo = this.brickGeo = new THREE.SphereGeometry(20, 20, 20)
+        this.brick = new THREE.Mesh(brickGeo, new THREE.MeshNormalMaterial({ wireframe: false }));
+
         this.brick.position.set(0, 0, 30);
         this.brick.castShadow = true;
         this.brick.receiveShadow = true;
@@ -89,7 +92,7 @@ class App {
     }
 
     private setup_controls() {
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
         this.controls.target.set(0, 0.5, 0);
         this.controls.rotateSpeed = 1.0;
         this.controls.zoomSpeed = 1.2;
@@ -110,7 +113,7 @@ class App {
 
         this.brick.rotateZ(0.03);
         this.controls.update();
-        TWEEN.update();
+        // TWEEN.update();
     }
 
     private move_camera() {
@@ -139,47 +142,47 @@ class App {
 
     }
 
-    private breakdownGeometry(sourceGeometry:any) {
+    private breakdownGeometry(sourceGeometry: any) {
         var geom = new THREE.Geometry()
-      
+
         // Create a Vector3 with positive random values scaled by amount.
-        var randVect = function(amount:any) {
-          return new THREE.Vector3(Math.random() * amount, Math.random() * amount , Math.random() * amount)
+        var randVect = function (amount: any) {
+            return new THREE.Vector3(Math.random() * amount, Math.random() * amount, Math.random() * amount)
         }
-      
+
         // Create and randomly offset a triangle based on 3 original vertices
-        var makeTri = function(geom:any, vertA:any, vertB:any, vertC:any, normal:any) {
-          var delta = normal.clone().multiplyScalar(0.5).multiply(randVect(1))
-          geom.vertices.push(vertA.clone().add(delta))
-          geom.vertices.push(vertB.clone().add(delta))
-          geom.vertices.push(vertC.clone().add(delta))
-          var vertIndex = geom.vertices.length - 3
-          var newFace = new THREE.Face3(vertIndex, vertIndex + 1, vertIndex + 2, normal)
-          geom.faces.push(newFace)
+        var makeTri = function (geom: any, vertA: any, vertB: any, vertC: any, normal: any) {
+            var delta = normal.clone().multiplyScalar(0.5).multiply(randVect(1))
+            geom.vertices.push(vertA.clone().add(delta))
+            geom.vertices.push(vertB.clone().add(delta))
+            geom.vertices.push(vertC.clone().add(delta))
+            var vertIndex = geom.vertices.length - 3
+            var newFace = new THREE.Face3(vertIndex, vertIndex + 1, vertIndex + 2, normal)
+            geom.faces.push(newFace)
         }
-      
+
         var faces = sourceGeometry.faces
         for (var i = 0; i < faces.length; i++) {
-          var face = faces[i]
-          var vertA = sourceGeometry.vertices[face.a]
-          var vertB = sourceGeometry.vertices[face.b]
-          var vertC = sourceGeometry.vertices[face.c]
-          var vertD = new THREE.Vector3().addVectors(vertA, vertB).multiplyScalar(0.5)
-          var vertE = new THREE.Vector3().addVectors(vertB, vertC).multiplyScalar(0.5)
-          var vertF = new THREE.Vector3().addVectors(vertC, vertA).multiplyScalar(0.5)
-      
-          makeTri(geom, vertA, vertD, vertF, face.normal)
-          makeTri(geom, vertD, vertB, vertE, face.normal)
-          makeTri(geom, vertE, vertC, vertF, face.normal)
-          makeTri(geom, vertD, vertE, vertF, face.normal)
-      
+            var face = faces[i]
+            var vertA = sourceGeometry.vertices[face.a]
+            var vertB = sourceGeometry.vertices[face.b]
+            var vertC = sourceGeometry.vertices[face.c]
+            var vertD = new THREE.Vector3().addVectors(vertA, vertB).multiplyScalar(0.5)
+            var vertE = new THREE.Vector3().addVectors(vertB, vertC).multiplyScalar(0.5)
+            var vertF = new THREE.Vector3().addVectors(vertC, vertA).multiplyScalar(0.5)
+
+            makeTri(geom, vertA, vertD, vertF, face.normal)
+            makeTri(geom, vertD, vertB, vertE, face.normal)
+            makeTri(geom, vertE, vertC, vertF, face.normal)
+            makeTri(geom, vertD, vertE, vertF, face.normal)
+
         }
-      
+
         geom.verticesNeedUpdate = true
         geom.normalsNeedUpdate = true
         return geom
-      }
-      
+    }
+
 }
 
 const app = new App();
