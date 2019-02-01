@@ -3,10 +3,11 @@ import { OrbitControls } from './js/controls/OrbitControls';
 import { _text_animation } from './triangulate';
 import { multi_prefab } from './multi-prefab';
 import { create_menu } from './menu';
-import { _transform } from './transform';
-import { Helper } from './utility/index';
+import { Helper } from './helper/index';
 declare const TWEEN: any;
 declare const THREE: any;
+declare const Power0: any;
+declare const BAS: any;
 // declare const OrbitControls: any;
 
 class App {
@@ -31,25 +32,45 @@ class App {
         this.render();
 
         // create_menu(this.scene);
-        // _text_animation(this.scene)
-        Helper.transform(
-            this.scene,
-            new THREE.TetrahedronGeometry(1.0),
-            100000,
-            new THREE.CubeGeometry(66, 66, 66),
-            new THREE.SphereGeometry(200, 20, 20)
-        );
+
+        // this.scene_text_to_shape();
+        // this.scene_transform_prefabs();
+        // this.scene_break_shape();
+        // this.scene_multi_prefabs();
         setTimeout(() => {
             // this.move_camera()
-            // multi_prefab(this.scene);
-            // this.scene.remove(this.brick)
 
-            // var mat = new THREE.MeshLambertMaterial({ flatShading: true })
+        }, 9999);
+    }
 
-            // var brekedGeo = this.breakdownGeometry(this.brickGeo)
-            // var currentMesh = new THREE.Mesh(brekedGeo, mat)
-            // this.scene.add(currentMesh)
-        }, 2222);
+    private scene_multi_prefabs() {
+        multi_prefab(this.scene);
+    }
+
+    private scene_break_shape() {
+        var brickGeo = this.brickGeo = new THREE.SphereGeometry(20, 20, 20);
+        this.brick = new THREE.Mesh(brickGeo, new THREE.MeshNormalMaterial({ wireframe: false }));
+        this.brick.position.set(0, 0, 30);
+        this.brick.castShadow = true;
+        this.brick.receiveShadow = true;
+        this.scene.add(this.brick);
+        this.scene.remove(this.brick);
+        var mat = new THREE.MeshLambertMaterial({ flatShading: true });
+        var brekedGeo = this.breakdownGeometry(this.brickGeo);
+        var currentMesh = new THREE.Mesh(brekedGeo, mat);
+        this.scene.add(currentMesh);
+    }
+
+    private scene_text_to_shape() {
+        _text_animation(this.scene);
+    }
+
+    private scene_transform_prefabs() {
+        var brickGeo = this.brickGeo = new THREE.SphereGeometry(20, 20, 20);
+        var brick = new THREE.Mesh(brickGeo, new THREE.MeshNormalMaterial({ wireframe: true }));
+        brick.position.set(222, 100, 100);
+        var prefabs = new BAS.PrefabBufferGeometry(new THREE.TetrahedronGeometry(1.0), 10000);
+        Helper.transform(this.scene, prefabs, brick, new THREE.SphereGeometry(200, 20, 20), { duration: 8.0, ease: Power0.easeIn, repeat: -1, repeatDelay: 0.25, yoyo: true });
     }
 
     private setup_helpers() {

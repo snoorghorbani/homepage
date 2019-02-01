@@ -1,3 +1,5 @@
+import { Utility } from "../utility/index";
+
 declare const Power0: any
 declare const Power1: any
 declare const THREE: any;
@@ -5,8 +7,11 @@ declare const TimelineMax: any;
 declare const TweenMax: any;
 declare const BAS: any;
 
+interface animationConfig {
+  duration: number, ease: any, repeat: -1 | 0 | 1, repeatDelay: number, yoyo: boolean
+}
 
-export function transform(scene,prefabGeometry,prefabCount, fromGeo,toGeo) {
+export function transform(scene, prefabGeometry, fromGeo, toGeo, animationConfig: animationConfig) {
   var light = new THREE.DirectionalLight(0xff00ff);
   scene.add(light);
 
@@ -15,8 +20,8 @@ export function transform(scene,prefabGeometry,prefabCount, fromGeo,toGeo) {
   scene.add(light);
 
   // Animation extends THREE.Mesh
-  var animation = new Animation(prefabGeometry,prefabCount,fromGeo,toGeo);
-  animation.animate(8.0, { ease: Power0.easeIn, repeat: -1, repeatDelay: 0.25, yoyo: true });
+  var animation = new Animation(prefabGeometry, fromGeo, toGeo);
+  animation.animate(animationConfig.duration, animationConfig);
   scene.add(animation);
 }
 
@@ -26,7 +31,8 @@ export function transform(scene,prefabGeometry,prefabCount, fromGeo,toGeo) {
 
 // Animation is just a convenient wrapper to create a BufferGeometry and a ShaderMaterial, which are tightly coupled
 // the geometry contains animation data, and the material uses this data to calculate an animation state based on uniforms
-function Animation(prefabGeometry,prefabCount,fromGeo,toGeo) {
+function Animation(prefabs, fromGeo, toGeo) {
+  var prefabCount = prefabs.prefabCount
   // the geometry that will be used by the PrefabBufferGeometry
   // any Geometry will do, but more complex ones can be repeated less often
 
@@ -34,7 +40,7 @@ function Animation(prefabGeometry,prefabCount,fromGeo,toGeo) {
 
   // BAS.PrefabBufferGeometry extends THREE.BufferGeometry
   // it stores data that is used for animation calculation in addition to the actual geometry
-  var geometry = new BAS.PrefabBufferGeometry(prefabGeometry, prefabCount);
+  // var prefabs = new BAS.PrefabBufferGeometry(prefabGeometry, prefabCount);
 
   // temp stuff
   var i, j, offset;
@@ -42,7 +48,7 @@ function Animation(prefabGeometry,prefabCount,fromGeo,toGeo) {
   // create a BufferAttribute with an item size of 2
   // each prefab has an animation duration and a delay
   // these will be used to calculate the animation state within the vertex shader
-  var aDelayDuration = geometry.createAttribute('aDelayDuration', 2);
+  var aDelayDuration = prefabs.createAttribute('aDelayDuration', 2);
   var duration = 1.0;
   var maxPrefabDelay = 0.5;
 
@@ -57,7 +63,8 @@ function Animation(prefabGeometry,prefabCount,fromGeo,toGeo) {
     // we have to do this because the vertex shader is executed for each vertex
     // because the values are the same per vertex, the prefab will move as a whole
     // if the duration or delay varies per vertex, you can achieve a stretching effect
-    for (j = 0; j < prefabGeometry.vertices.length; j++) {
+    debugger
+    for (j = 0; j < prefabs.prefabGeometry.vertices.length; j++) {
       aDelayDuration.array[offset] = delay;
       aDelayDuration.array[offset + 1] = duration;
 
@@ -67,8 +74,8 @@ function Animation(prefabGeometry,prefabCount,fromGeo,toGeo) {
 
   // create two BufferAttributes with an item size of 3
   // these will store the start and end position for the translation
-  var aStartPosition = geometry.createAttribute('aStartPosition', 3);
-  var aEndPosition = geometry.createAttribute('aEndPosition', 3);
+  var aStartPosition = prefabs.createAttribute('aStartPosition', 3);
+  var aEndPosition = prefabs.createAttribute('aEndPosition', 3);
 
   // make two temp vectors so we don't create excessive objects inside the loop
   var startPosition = new THREE.Vector3();
@@ -77,8 +84,10 @@ function Animation(prefabGeometry,prefabCount,fromGeo,toGeo) {
   var prefabData = [];
 
 
-  var startPositions = THREE.GeometryUtils.randomPointsInGeometry(fromGeo,prefabCount)
-  var endPositions = THREE.GeometryUtils.randomPointsInGeometry(toGeo,prefabCount)
+  // var startPositions = THREE.GeometryUtils.randomPointsInGeometry(fromGeo.geometry,prefabCount)
+  // var endPositions = THREE.GeometryUtils.randomPointsInGeometry(toGeo,prefabCount)
+  var startPositions = Utility.geometry.randomPointsInObject(fromGeo, prefabCount)
+  var endPositions = Utility.geometry.randomPointsInObject(toGeo, prefabCount)
 
   // calculate the stand and end positions for each prefab
   for (i = 0; i < prefabCount; i++) {
@@ -93,8 +102,8 @@ function Animation(prefabGeometry,prefabCount,fromGeo,toGeo) {
     // this data has to be stored per prefab as well
     // BAS.PrefabBufferGeometry.setPrefabData is a convenience method for this
     // calling this (instead of the unfolded way like aDelayDuration) might be slightly slower in large geometries
-    geometry.setPrefabData(aStartPosition, i, startPosition.toArray(prefabData));
-    geometry.setPrefabData(aEndPosition, i, endPosition.toArray(prefabData));
+    prefabs.setPrefabData(aStartPosition, i, startPosition.toArray(prefabData));
+    prefabs.setPrefabData(aEndPosition, i, endPosition.toArray(prefabData));
   }
 
   // the axis and angle will be used to calculate the rotation of the prefab using a Quaternion
@@ -110,7 +119,7 @@ function Animation(prefabGeometry,prefabCount,fromGeo,toGeo) {
   // 'i' is the index of the prefab
   // 'total' is the total number of prefabs (same as prefabCount)
   // this is the most compact way of filling the buffer, but it's a little slower and less flexible than the others
-  geometry.createAttribute('aAxisAngle', 4, function (data, i, total) {
+  prefabs.createAttribute('aAxisAngle', 4, function (data, i, total) {
     // get a random axis
     axis.x = THREE.Math.randFloatSpread(2);
     axis.y = THREE.Math.randFloatSpread(2);
@@ -199,7 +208,7 @@ function Animation(prefabGeometry,prefabCount,fromGeo,toGeo) {
   // this isn't required when using flat shading
   //geometry.computeVertexNormals();
 
-  THREE.Mesh.call(this, geometry, material);
+  THREE.Mesh.call(this, prefabs, material);
 
   // it's usually a good idea to set frustum culling to false because
   // the bounding box does not reflect the dimensions of the whole object in the scene
@@ -222,6 +231,6 @@ Animation.prototype.animate = function (duration, options) {
   options.time = this.totalDuration;
   TweenMax.fromTo(this.rotation, 4, { y: 0 }, { y: Math.PI * 2, ease: Power1.easeInOut }, 0);
 
-  
+
   return TweenMax.fromTo(this, duration, { time: 0.0 }, options);
 };

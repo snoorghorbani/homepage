@@ -1,6 +1,7 @@
-import { transform } from "./transform";
+import { vector } from "./vector";
+import { geometry } from "./geometry";
 
-
-export const Helper = {
-    transform
+export const Utility = {
+    vector,
+    geometry
 }
