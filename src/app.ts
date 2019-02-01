@@ -32,7 +32,13 @@ class App {
 
         // create_menu(this.scene);
         // _text_animation(this.scene)
-        Helper.transform(this.scene, new THREE.TetrahedronGeometry(1.0), 1000, new THREE.SphereGeometry(20, 20, 20), new THREE.SphereGeometry(200, 20, 20));
+        Helper.transform(
+            this.scene,
+            new THREE.TetrahedronGeometry(1.0),
+            100000,
+            new THREE.CubeGeometry(66, 66, 66),
+            new THREE.SphereGeometry(200, 20, 20)
+        );
         setTimeout(() => {
             // this.move_camera()
             // multi_prefab(this.scene);
