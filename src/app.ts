@@ -1,7 +1,10 @@
-// import * as THREE from 'three';
-// import { OrbitControls } from './js/controls/OrbitControls';
+import * as T from 'three';
+import { OrbitControls } from './js/controls/OrbitControls';
 import { _text_animation } from './triangulate';
 import { multi_prefab } from './multi-prefab';
+import { create_menu } from './menu';
+import { _transform } from './transform';
+import { Helper } from './utility/index';
 declare const TWEEN: any;
 declare const THREE: any;
 // declare const OrbitControls: any;
@@ -11,10 +14,10 @@ class App {
     private readonly scene = new THREE.Scene();
     private readonly camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 10000);
 
-    private brick: THREE.Mesh;
-    private brickGeo: THREE.Geometry;
-    private plate: THREE.Mesh;
-    private controls: THREE.OrbitControls;
+    private brick: T.Mesh;
+    private brickGeo: T.Geometry;
+    private plate: T.Mesh;
+    private controls: OrbitControls;
 
     constructor() {
 
@@ -24,11 +27,13 @@ class App {
         // this.setup_helpers();
         this.setup_camera();
         this.create_objects();
-        this.setup_lights();
+        // this.setup_lights();
         this.render();
 
+        // create_menu(this.scene);
+        // _text_animation(this.scene)
+        Helper.transform(this.scene, new THREE.TetrahedronGeometry(1.0), 1000, new THREE.SphereGeometry(20, 20, 20), new THREE.SphereGeometry(200, 20, 20));
         setTimeout(() => {
-            _text_animation(this.scene)
             // this.move_camera()
             // multi_prefab(this.scene);
             // this.scene.remove(this.brick)
@@ -38,7 +43,7 @@ class App {
             // var brekedGeo = this.breakdownGeometry(this.brickGeo)
             // var currentMesh = new THREE.Mesh(brekedGeo, mat)
             // this.scene.add(currentMesh)
-        }, 3333);
+        }, 2222);
     }
 
     private setup_helpers() {
@@ -61,12 +66,12 @@ class App {
     }
 
     private setup_lights() {
-        var light = new THREE.PointLight(0xfff00f, 1, 1000);
-        light.position.set(100, -100, 200);
+        var light = new THREE.PointLight(0x00ffff, 100, 1000);
+        light.position.set(0, 0, 300);
         light.castShadow = true;
         light.shadow.mapSize.width = 1024; // default is 512
         light.shadow.mapSize.height = 1024;
-        // this.scene.add(light);
+        this.scene.add(light);
     }
 
     private create_objects() {
@@ -112,7 +117,7 @@ class App {
         this.adjustCanvasSize();
 
         // this.brick.rotateZ(0.03);
-        this.controls.update();
+        // this.controls.update();
         // TWEEN.update();
     }
 

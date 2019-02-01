@@ -49,12 +49,12 @@ export const _text_animation = function (scene: any) {
         );
         tl.fromTo(textAnimation.rotation, 4, { y: 0 }, { y: Math.PI * 2, ease: Power1.easeInOut }, 0);
 
-        // createTweenScrubber(tl);
+        createTweenScrubber(tl);
     })
 }
 
 function createTextAnimation(font) {
-    var geometry = generateTextGeometry('soushians', {
+    var geometry = generateTextGeometry('Hello, World', {
         size:22,
         height:12,
         font:font,
@@ -76,7 +76,7 @@ function createTextAnimation(font) {
 
 function generateTextGeometry(text: string, params: any) {
     var geometry = new THREE.TextGeometry(text, params);
-    // var geometry =  new THREE.SphereGeometry(20, 20, 20);
+    // var geometry =  new THREE.IcosahedronGeometry(20);
 
     geometry.computeBoundingBox();
   
@@ -134,7 +134,7 @@ function TextAnimation(textGeometry) {
       }
   
       // end position
-      var point = utils.fibSpherePoint(i, faceCount, 200);
+      var point = utils.fibSpherePoint(i, faceCount, 100);
   
       for (v = 0; v < 9; v += 3) {
         aEndPosition.array[i3 + v    ] = point.x;
@@ -162,7 +162,7 @@ function TextAnimation(textGeometry) {
     var material = new BAS.PhongAnimationMaterial({
         flatShading: true,
         side: THREE.DoubleSide,
-        transparent: true,
+        transparent: false,
         uniforms: {
           uTime: {type: 'f', value: 0}
         },
@@ -498,8 +498,7 @@ function TextAnimation(textGeometry) {
       }
   };
   
-  function createTweenScrubber(tween, seekSpeed) {
-    seekSpeed = seekSpeed || 0.001;
+  function createTweenScrubber(tween, seekSpeed=0.001) {
   
     function stop() {
       TweenMax.to(tween, 1, {timeScale:0});
