@@ -1,4 +1,5 @@
 import { Utility } from './utility/index';
+import { Helper } from './helper/index';
 
 declare const Power0: any;
 declare const THREE: any;
@@ -58,7 +59,8 @@ export const circleWave = function(scene, config: IConfig) {
 	}
 
 	function updatePoints() {
-		new_positions = [];
+        new_positions = [];
+        // var newpoints=Utility.geometry.randomPointsInObject(new THREE.SphereGeometry(20, 20, 20),360);
 		for (var i = 0; i <= config.circleResolution; i++) {
 			var angle = Utility.angle.toRad(i);
 			var radiusAddon = 0;
@@ -107,6 +109,7 @@ export const circleWave = function(scene, config: IConfig) {
 			var y = (config.radius + radiusAddon) * Math.sin(angle);
 			var z = 0;
 			if (config.z) z = (config.radius + radiusAddon) * Math.sin(angle) * Math.cos(angle);
+
 
 			new_positions.push(new THREE.Vector3(x, y, z));
 		}
@@ -194,8 +197,6 @@ export const circleWave = function(scene, config: IConfig) {
 		mouseAngle = Utility.angle.getAngle(event.pageX, event.pageY);
 		startTweens();
 	};
-
-	// Helpers
 
 	buildCircle();
 	loop();
