@@ -4,6 +4,8 @@ import { _text_animation } from './triangulate';
 import { multi_prefab } from './multi-prefab';
 import { create_menu } from './menu';
 import { Helper } from './helper/index';
+import { Curve } from './helper/curve';
+import { circleWave } from './circle-wave';
 declare const TWEEN: any;
 declare const THREE: any;
 declare const Power0: any;
@@ -33,10 +35,15 @@ class App {
 
         // create_menu(this.scene);
 
+        circleWave(this.scene)
         // this.scene_text_to_shape();
         // this.scene_transform_prefabs();
         // this.scene_break_shape();
         // this.scene_multi_prefabs();
+
+        // Curve(this.scene);
+        
+        // Helper.instansedPrefabs(this.scene);
         setTimeout(() => {
             // this.move_camera()
 
@@ -118,7 +125,7 @@ class App {
     }
 
     private setup_camera() {
-        this.camera.position.set(0, 0, 500);
+        this.camera.position.set(0, 0, 20);
         this.camera.lookAt(0, 0, 0);
         this.scene.add(this.camera);
     }
