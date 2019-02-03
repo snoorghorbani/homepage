@@ -5,7 +5,7 @@ import { multi_prefab } from './multi-prefab';
 import { create_menu } from './menu';
 import { Helper } from './helper/index';
 import { Curve } from './helper/curve';
-import { circleWave } from './circle-wave';
+import { circleWave } from './circle-wave.1';
 declare const TWEEN: any;
 declare const THREE: any;
 declare const Power0: any;

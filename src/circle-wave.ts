@@ -24,7 +24,7 @@ interface IConfig {
 	gap: number;
 }
 
-export const circleWave = function(scene, config: IConfig) {
+export const circleWave = function (scene, config: IConfig) {
 	var _w = window.innerWidth;
 	var _h = window.innerHeight;
 
@@ -59,8 +59,8 @@ export const circleWave = function(scene, config: IConfig) {
 	}
 
 	function updatePoints() {
-        new_positions = [];
-        // var newpoints=Utility.geometry.randomPointsInObject(new THREE.SphereGeometry(20, 20, 20),360);
+		new_positions = [];
+		var newpoints = Utility.geometry.randomPointsInObject(new THREE.SphereGeometry(20, 20, 20), 30);
 		for (var i = 0; i <= config.circleResolution; i++) {
 			var angle = Utility.angle.toRad(i);
 			var radiusAddon = 0;
@@ -87,7 +87,7 @@ export const circleWave = function(scene, config: IConfig) {
 					smooth_pct =
 						1 -
 						(angle - (mouseAngle - waveAngle * smoothingCoeff)) /
-							(mouseAngle - waveAngle - (mouseAngle - waveAngle * smoothingCoeff));
+						(mouseAngle - waveAngle - (mouseAngle - waveAngle * smoothingCoeff));
 				} else if (
 					angle >= mouseAngle + waveAngle - waveAngle * smoothingCoeff &&
 					angle <= mouseAngle + waveAngle
@@ -95,7 +95,7 @@ export const circleWave = function(scene, config: IConfig) {
 					smooth_pct =
 						1 -
 						(angle - (mouseAngle + waveAngle - waveAngle * smoothingCoeff)) /
-							(mouseAngle + waveAngle - (mouseAngle + waveAngle - waveAngle * smoothingCoeff));
+						(mouseAngle + waveAngle - (mouseAngle + waveAngle - waveAngle * smoothingCoeff));
 				}
 
 				radiusAddon =
@@ -180,7 +180,7 @@ export const circleWave = function(scene, config: IConfig) {
 	}
 
 	function removeCircles() {
-		circles.forEach(function(circle) {
+		circles.forEach(function (circle) {
 			scene.remove(circle);
 		});
 		circles = [];
@@ -193,7 +193,7 @@ export const circleWave = function(scene, config: IConfig) {
 		requestAnimationFrame(loop);
 	}
 
-	document.body.onmousemove = function(event) {
+	document.body.onmousemove = function (event) {
 		mouseAngle = Utility.angle.getAngle(event.pageX, event.pageY);
 		startTweens();
 	};
