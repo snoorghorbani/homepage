@@ -7,7 +7,10 @@ declare const TweenMax: any;
 declare const BAS: any;
 declare const TWEEN: any;
 
-export class Renderer {
+class Renderer {
+	private scene;
+	private camera;
+
 	private renderer = new THREE.WebGLRenderer({
 		antialias: true,
 		canvas: <HTMLCanvasElement>document.getElementById('mainCanvas')
@@ -16,7 +19,7 @@ export class Renderer {
 
 	private onRender = [];
 
-	constructor(private scene, private camera) {
+	constructor() {
 		debugger;
 		this.config_renderer();
 	}
@@ -28,7 +31,11 @@ export class Renderer {
 		this.renderer.setClearColor(new THREE.Color('rgb(256,0,0)'));
 	}
 
-	public config() {
+	public config(scene: any, camera: any) {
+		this.scene = scene;
+		this.camera = camera;
+	}
+	public setup() {
 		this.renderer.setSize(innerWidth, innerHeight);
 	}
 	public render() {
@@ -40,3 +47,5 @@ export class Renderer {
 		this.onRender.push(fn);
 	}
 }
+
+export const renderer = new Renderer();

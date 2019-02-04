@@ -6,7 +6,7 @@ import { create_menu } from './menu';
 import { Helper } from './helper/index';
 import { Curve } from './helper/curve';
 import { circleWave } from './circle-wave.1';
-import { Renderer } from './renderer';
+import { renderer } from './renderer';
 
 declare const TWEEN: any;
 declare const THREE: any;
@@ -17,7 +17,7 @@ declare const BAS: any;
 class App {
 	private readonly scene = new THREE.Scene();
 	private readonly camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 10000);
-	private readonly renderer = new Renderer(this.scene, this.camera);
+	
 
 	private brick: T.Mesh;
 	private brickGeo: T.Geometry;
@@ -25,6 +25,7 @@ class App {
 	private controls: OrbitControls;
 
 	constructor() {
+		renderer.config(this.scene, this.camera);
 		this.config_scene();
 		this.setup_controls();
 		// this.setup_helpers();
@@ -142,7 +143,7 @@ class App {
 	}
 
 	private setup_controls() {
-		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+		this.controls = new THREE.OrbitControls(this.camera, renderer.domElement);
 		this.controls.target.set(0, 0.5, 0);
 		this.controls.rotateSpeed = 1.0;
 		this.controls.zoomSpeed = 1.2;
@@ -151,7 +152,7 @@ class App {
 	}
 
 	private adjustCanvasSize() {
-		this.renderer.config;
+		renderer.config;
 		this.camera.aspect = innerWidth / innerHeight;
 		this.camera.updateProjectionMatrix();
 	}
@@ -164,7 +165,7 @@ class App {
 	}
 
 	private render() {
-		this.renderer.render();
+		renderer.render();
 		this.adjustCanvasSize();
 
 		// this.brick.rotateZ(0.03);

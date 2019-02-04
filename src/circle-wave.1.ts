@@ -49,7 +49,7 @@ export const circleWave = function(scene, config: IConfig) {
 		circleGeo,
 		new THREE.LineBasicMaterial({
 			// color: config.color,
-			vertexColors:  THREE.VertexColors,
+			vertexColors: THREE.VertexColors,
 			linewidth: config.lineWidth,
 			transparent: true
 		})
