@@ -6,6 +6,8 @@ import { create_menu } from './menu';
 import { Helper } from './helper/index';
 import { Curve } from './helper/curve';
 import { circleWave } from './circle-wave.1';
+import { Renderer } from './renderer';
+
 declare const TWEEN: any;
 declare const THREE: any;
 declare const Power0: any;
@@ -13,12 +15,9 @@ declare const BAS: any;
 // declare const OrbitControls: any;
 
 class App {
-	private readonly renderer = new THREE.WebGLRenderer({
-		antialias: true,
-		canvas: <HTMLCanvasElement>document.getElementById('mainCanvas')
-	});
 	private readonly scene = new THREE.Scene();
 	private readonly camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 10000);
+	private readonly renderer = new Renderer(this.scene, this.camera);
 
 	private brick: T.Mesh;
 	private brickGeo: T.Geometry;
@@ -26,14 +25,13 @@ class App {
 	private controls: OrbitControls;
 
 	constructor() {
-		this.config_renderer();
 		this.config_scene();
 		this.setup_controls();
 		// this.setup_helpers();
 		this.setup_camera();
 		this.create_objects();
 		// this.setup_lights();
-		this.render();
+		this.animate();
 
 		// create_menu(this.scene);
 
@@ -114,13 +112,6 @@ class App {
 		this.scene.background = new THREE.Color('#ffffff');
 	}
 
-	private config_renderer() {
-		this.renderer.shadowMap.enabled = true;
-		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-		this.renderer.setSize(innerWidth, innerHeight);
-		this.renderer.setClearColor(new THREE.Color('rgb(256,0,0)'));
-	}
-
 	private setup_lights() {
 		var light = new THREE.PointLight(0x00ffff, 100, 1000);
 		light.position.set(0, 0, 300);
@@ -160,16 +151,20 @@ class App {
 	}
 
 	private adjustCanvasSize() {
-		this.renderer.setSize(innerWidth, innerHeight);
+		this.renderer.config;
 		this.camera.aspect = innerWidth / innerHeight;
 		this.camera.updateProjectionMatrix();
 	}
 
-	private render() {
-		this.renderer.render(this.scene, this.camera);
+	private animate() {
 		requestAnimationFrame(() => {
-			this.render();
+			this.animate();
 		});
+		this.render();
+	}
+
+	private render() {
+		this.renderer.render();
 		this.adjustCanvasSize();
 
 		// this.brick.rotateZ(0.03);
