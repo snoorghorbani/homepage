@@ -39,9 +39,8 @@ class Renderer {
 		this.renderer.setSize(innerWidth, innerHeight);
 	}
 	public render() {
-		this.renderer.render(this.scene, this.camera);
-
 		this.onRender.forEach((fn) => fn());
+		this.renderer.render(this.scene, this.camera);
 	}
 	public do(fn: any) {
 		this.onRender.push(fn);
