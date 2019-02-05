@@ -20,7 +20,6 @@ class Renderer {
 	private onRender = [];
 
 	constructor() {
-		debugger;
 		this.config_renderer();
 	}
 

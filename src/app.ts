@@ -32,10 +32,9 @@ class App {
 		this.setup_camera();
 		this.create_objects();
 		// this.setup_lights();
-		this.animate();
-
+		
 		// create_menu(this.scene);
-
+		
 		circleWave(this.scene, {
 			wavesAmount: 12,
 			wavesHeight: 1,
@@ -56,15 +55,20 @@ class App {
 		// this.scene_transform_prefabs();
 		// this.scene_break_shape();
 		// this.scene_multi_prefabs();
-
+		
 		// Curve(this.scene);
-
+		
 		// Helper.instansedPrefabs(this.scene);
 		setTimeout(() => {
 			// this.move_camera()
 		}, 9999);
-	}
 
+		/**
+		 * 
+		 */
+		this.animate();
+	}
+	
 	private scene_multi_prefabs() {
 		multi_prefab(this.scene);
 	}
@@ -110,7 +114,7 @@ class App {
 	}
 
 	private config_scene() {
-		this.scene.background = new THREE.Color('#ffffff');
+		this.scene.background = new THREE.Color('#000000');
 	}
 
 	private setup_lights() {
@@ -137,7 +141,7 @@ class App {
 	}
 
 	private setup_camera() {
-		this.camera.position.set(0, 0, 20);
+		this.camera.position.set(0, 0, 200);
 		this.camera.lookAt(0, 0, 0);
 		this.scene.add(this.camera);
 	}
