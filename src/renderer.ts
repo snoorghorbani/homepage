@@ -7,35 +7,45 @@ declare const TweenMax: any;
 declare const BAS: any;
 declare const TWEEN: any;
 
-class Renderer {
+class _Renderer {
 	private scene;
 	private camera;
-
-	private renderer = new THREE.WebGLRenderer({
-		antialias: true,
-		canvas: <HTMLCanvasElement>document.getElementById('mainCanvas')
-	});
-	public domElement = this.renderer.domElement;
+	private width: number;
+	private height: number;
+	private renderer;
+	public domElement;
 
 	private onRender = [];
 
-	constructor() {
+	constructor(canvasId: string, { width, height }) {
+		this.width = width;
+		this.height = height;
+
+		this.renderer = new THREE.WebGLRenderer({
+			antialias: true,
+			alpha:true,
+			canvas: <HTMLCanvasElement>document.getElementById(canvasId)
+		});
+		this.domElement = this.renderer.domElement;
+
 		this.config_renderer();
 	}
 
 	public config_renderer() {
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-		this.renderer.setSize(innerWidth, innerHeight);
-		this.renderer.setClearColor(new THREE.Color('rgb(256,0,0)'));
+		this.renderer.setSize(this.width, this.height);
+		// this.renderer.setClearColor(new THREE.Color('rgb(256,0,0)'));
 	}
 
-	public config(scene: any, camera: any) {
+	public config({ scene, camera, width, height }) {
 		this.scene = scene;
 		this.camera = camera;
+		this.width = width;
+		this.height = height;
 	}
 	public setup() {
-		this.renderer.setSize(innerWidth, innerHeight);
+		this.renderer.setSize(this.width, this.height);
 	}
 	public render() {
 		this.onRender.forEach((fn) => fn());
@@ -46,4 +56,9 @@ class Renderer {
 	}
 }
 
-export const renderer = new Renderer();
+const renederes = {}
+
+export const Renderer = function (name: string, { width, height }) {
+
+	return (renederes[name]) ? (renederes[name]) : renederes[name] = new _Renderer(name, { width, height })
+}

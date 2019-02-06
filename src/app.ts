@@ -6,7 +6,14 @@ import { create_menu } from './menu';
 import { Helper } from './helper/index';
 import { Curve } from './helper/curve';
 import { circleWave } from './circle-wave.1';
-import { renderer } from './renderer';
+import { Renderer } from './renderer';
+import { morph_test } from './morph';
+import './menu-app';
+
+const renderer = Renderer("mainCanvas",{
+	width:innerWidth,
+	height:innerHeight
+});
 
 declare const TWEEN: any;
 declare const THREE: any;
@@ -17,7 +24,7 @@ declare const BAS: any;
 class App {
 	private readonly scene = new THREE.Scene();
 	private readonly camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 10000);
-	
+
 
 	private brick: T.Mesh;
 	private brickGeo: T.Geometry;
@@ -25,39 +32,44 @@ class App {
 	private controls: OrbitControls;
 
 	constructor() {
-		renderer.config(this.scene, this.camera);
+		renderer.config({
+			width: innerWidth,
+			height: innerHeight,
+			scene: this.scene,
+			camera: this.camera
+		});
 		this.config_scene();
 		this.setup_controls();
 		// this.setup_helpers();
 		this.setup_camera();
 		this.create_objects();
 		// this.setup_lights();
-		
-		// create_menu(this.scene);
-		
-		circleWave(this.scene, {
-			wavesAmount: 12,
-			wavesHeight: 1,
-			circlesAmount: 66,
-			circlesSpacing: 2,
-			lineWidth: 1,
-			opacityCoeff: 0.4,
-			color: '#fc1b6a',
-			dev: true,
-			radius: 4,
-			colorCoeff: 1,
-			tweenDelay: 1500,
-			circleResolution: 360,
-			gap: 9,
-			z: true
-		});
-		// this.scene_text_to_shape();
+
+		create_menu(this.scene);
+		morph_test(this.scene);
+		// circleWave(this.scene, {
+		// 	wavesAmount: 12,
+		// 	wavesHeight: 1,
+		// 	circlesAmount: 66,
+		// 	circlesSpacing: 2,
+		// 	lineWidth: 1,
+		// 	opacityCoeff: 0.4,
+		// 	color: '#fc1b6a',
+		// 	dev: true,
+		// 	radius: 4,
+		// 	colorCoeff: 1,
+		// 	tweenDelay: 1500,
+		// 	circleResolution: 360,
+		// 	gap: 9,
+		// 	z: true
+		// });
+		this.scene_text_to_shape();
 		// this.scene_transform_prefabs();
 		// this.scene_break_shape();
 		// this.scene_multi_prefabs();
-		
+
 		// Curve(this.scene);
-		
+
 		// Helper.instansedPrefabs(this.scene);
 		setTimeout(() => {
 			// this.move_camera()
@@ -68,7 +80,7 @@ class App {
 		 */
 		this.animate();
 	}
-	
+
 	private scene_multi_prefabs() {
 		multi_prefab(this.scene);
 	}
@@ -114,7 +126,7 @@ class App {
 	}
 
 	private config_scene() {
-		this.scene.background = new THREE.Color('#000000');
+		this.scene.background = new THREE.Color('#ffff00');
 	}
 
 	private setup_lights() {
@@ -206,12 +218,12 @@ class App {
 		var geom = new THREE.Geometry();
 
 		// Create a Vector3 with positive random values scaled by amount.
-		var randVect = function(amount: any) {
+		var randVect = function (amount: any) {
 			return new THREE.Vector3(Math.random() * amount, Math.random() * amount, Math.random() * amount);
 		};
 
 		// Create and randomly offset a triangle based on 3 original vertices
-		var makeTri = function(geom: any, vertA: any, vertB: any, vertC: any, normal: any) {
+		var makeTri = function (geom: any, vertA: any, vertB: any, vertC: any, normal: any) {
 			var delta = normal.clone().multiplyScalar(0.5).multiply(randVect(1));
 			geom.vertices.push(vertA.clone().add(delta));
 			geom.vertices.push(vertB.clone().add(delta));
