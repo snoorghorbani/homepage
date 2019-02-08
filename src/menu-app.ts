@@ -66,24 +66,23 @@ class MenuApp {
 		this.light.castShadow = true;
 		this.light.shadow.mapSize.width = 1024; // default is 512
 		this.light.shadow.mapSize.height = 1024;
-		this.scene.add(this.light);
-		this.scene.add(
-			new THREE.PointLightHelper(this.light)
-		)
-		// T.MeshStandardMaterial
+		// this.scene.add(this.light);
+		// this.scene.add(
+		// 	new THREE.PointLightHelper(this.light)
+		// )
 		this.light2 = new T.SpotLight(0xffffff, 1, 500);
 		this.light2.position.set(100, 100, 300);
 		this.light2.castShadow = true;
 		this.light2.shadow.mapSize.width = 1024; // default is 512
 		this.light2.shadow.mapSize.height = 1024;
-		this.scene.add(
-			new THREE.PointLightHelper(this.light2)
-		)
-		this.scene.add(this.light2);
+		// this.scene.add(
+		// 	new THREE.PointLightHelper(this.light2)
+		// )
+		// this.scene.add(this.light2);
 	}
 	private setup_camera() {
 		// this.camera.position.set(300, -300, 300);
-		this.camera.position.set(0,0, 300);
+		this.camera.position.set(0,0, 200);
 		this.camera.lookAt(0, 0, 0);
 		this.scene.add(this.camera);
 	}
