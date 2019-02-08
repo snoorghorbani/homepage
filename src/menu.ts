@@ -40,7 +40,6 @@ export const create_menu = function (scene: any) {
     // menuItem.geometry = geometry.clone();
     var pos = getClosePosition(i)
     menuItem.position.set(pos.x, pos.y, pos.z)
-    debugger;
     menuItems.push(menuItem);
     group.add(menuItem);
     // scene.add(menuItem);
@@ -57,7 +56,6 @@ export const create_menu = function (scene: any) {
     requestAnimationFrame(render);
     if (!isInOpenMode) {
       // group.rotation.y += .03;
-      debugger;
       group.rotation.y = group.rotation.y % Math.PI;
     }
     TWEEN.update();

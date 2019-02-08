@@ -5,10 +5,17 @@ import { multi_prefab } from './multi-prefab';
 import { create_menu } from './menu';
 import { Helper } from './helper/index';
 import { Curve } from './helper/curve';
-import { circleWave } from './circle-wave.1';
+import { circleWave } from './circle-wave';
 import { Renderer } from './renderer';
 import { morph_test } from './morph';
 import './menu-app';
+import { SolidWireframeMaterial } from './helper/wireframe';
+
+declare const TWEEN: any;
+declare const THREE: any;
+declare const Power0: any;
+declare const BAS: any;
+// declare const OrbitControls: any;
 
 const width = innerWidth;
 const height = innerHeight;
@@ -17,12 +24,6 @@ const renderer = Renderer("mainCanvas", {
 	width,
 	height
 });
-
-declare const TWEEN: any;
-declare const THREE: any;
-declare const Power0: any;
-declare const BAS: any;
-// declare const OrbitControls: any;
 
 class App {
 	private readonly scene = new THREE.Scene();
@@ -50,25 +51,25 @@ class App {
 		this.create_objects();
 		this.setup_lights();
 
-		var menu = create_menu(this.scene);
+		// var menu = create_menu(this.scene);
 
-		// morph_test(this.scene);
-		// circleWave(this.scene, {
-		// 	wavesAmount: 12,
-		// 	wavesHeight: 1,
-		// 	circlesAmount: 66,
-		// 	circlesSpacing: 2,
-		// 	lineWidth: 1,
-		// 	opacityCoeff: 0.4,
-		// 	color: '#fc1b6a',
-		// 	dev: true,
-		// 	radius: 4,
-		// 	colorCoeff: 1,
-		// 	tweenDelay: 1500,
-		// 	circleResolution: 360,
-		// 	gap: 9,
-		// 	z: true
-		// });
+		//  morph_test(this.scene);
+		circleWave(this.scene, {
+			wavesAmount: 12,
+			wavesHeight: 1,
+			circlesAmount: 66,
+			circlesSpacing: 2,
+			lineWidth: 1,
+			opacityCoeff: 0.4,
+			color: '#fc1b6a',
+			dev: true,
+			radius: 4,
+			colorCoeff: 1,
+			tweenDelay: 1500,
+			circleResolution: 360,
+			gap: 9,
+			z: true
+		});
 		// this.scene_text_to_shape();
 		// this.scene_transform_prefabs();
 		// this.scene_break_shape();
@@ -77,9 +78,10 @@ class App {
 		// Curve(this.scene);
 
 		// Helper.instansedPrefabs(this.scene);
-		setTimeout(() => {
-			// this.move_camera()
-		}, 9999);
+
+		var geo = new THREE.BoxBufferGeometry(20, 20, 20);
+		var _mat = SolidWireframeMaterial(geo);
+		this.scene.add(new THREE.Mesh(geo, _mat));
 
 		/**
 		 * 

@@ -118,7 +118,6 @@ class MenuApp {
 		this.controls.enablePan = false;
 	}
 	private render() {
-		debugger;
 		// this.raycaster.setFromCamera(mouse, this.camera);
 		// var intersects = this.raycaster.intersectObjects(this.scene.children);
 		// if (intersects.length > 0) {

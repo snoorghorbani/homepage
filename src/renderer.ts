@@ -34,6 +34,8 @@ class _Renderer {
 	public config_renderer() {
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		this.renderer.setPixelRatio( window.devicePixelRatio );
+
 		this.renderer.setSize(this.width, this.height);
 		// this.renderer.setClearColor(new THREE.Color('rgb(256,0,0)'));
 	}
