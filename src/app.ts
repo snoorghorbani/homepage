@@ -132,7 +132,7 @@ class App {
 	}
 
 	private config_scene() {
-		this.scene.background = new THREE.Color('#ffff00');
+		this.scene.background = new THREE.Color('#ffffff');
 	}
 
 	private setup_lights() {

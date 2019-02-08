@@ -14,6 +14,10 @@ export const create_menu = function (scene: any) {
   var group = new THREE.Group();
   group.castShadow = true;
   group.receiveShadow = true;
+  group.rotation.x = 0;
+  group.rotation.y = Math.PI / 4;
+  group.rotation.z = 0;
+
   const gap = 5;
   const size = 10;
   var geometry = new THREE.CubeGeometry(size, size, size);
@@ -21,7 +25,7 @@ export const create_menu = function (scene: any) {
   geometry.morphTargets[0] = { name: 't1', vertices: hiddenGeometry.vertices };
   geometry.computeMorphNormals();
 
-  var material = new THREE.MeshLambertMaterial({ morphTargets: true, color: 0xffffff, wireframe: false });
+  var material = new THREE.MeshNormalMaterial({ morphTargets: true, color: 0xffffff, wireframe: false });
 
   var cube = new THREE.Mesh(geometry, material);
   cube.position.set(0, 0, 0);
@@ -34,11 +38,8 @@ export const create_menu = function (scene: any) {
   for (let i = 0; i < 27; i++) {
     var menuItem = cube.clone();
     // menuItem.geometry = geometry.clone();
-    menuItem.position.set(
-      (i % 3) * (gap + size) - gap - 10,
-      Math.floor(i % 9 / 3) * (gap + size) - gap - 10,
-      Math.floor(i / 9) * (gap + size) - gap - 10
-    )
+    var pos = getClosePosition(i)
+    menuItem.position.set(pos.x, pos.y, pos.z)
     debugger;
     menuItems.push(menuItem);
     group.add(menuItem);
@@ -47,12 +48,15 @@ export const create_menu = function (scene: any) {
 
   scene.add(group);
 
+  var axesHelper = new THREE.AxesHelper(55);
+  group.add(axesHelper);
+
   render();
 
   function render() {
     requestAnimationFrame(render);
     if (!isInOpenMode) {
-      group.rotation.y += .03;
+      // group.rotation.y += .03;
       debugger;
       group.rotation.y = group.rotation.y % Math.PI;
     }
@@ -67,11 +71,18 @@ export const create_menu = function (scene: any) {
       z: 0
     }
   }
-  function getClosePosition(i: number) {
+  function getHoverPosition(i: number) {
     return {
       x: (i % 3) * (gap + size) - gap - 10,
       y: Math.floor(i % 9 / 3) * (gap + size) - gap - 10,
       z: Math.floor(i / 9) * (gap + size) - gap - 10
+    }
+  }
+  function getClosePosition(i: number) {
+    return {
+      x: (i % 3) * (size) - 10,
+      y: Math.floor(i % 9 / 3) * (gap + size) - gap - 10,
+      z: Math.floor(i / 9) * (size) - 10
     }
   }
 
@@ -79,12 +90,25 @@ export const create_menu = function (scene: any) {
     isInOpenMode = true;
     menuItems.forEach((cube, idx) => {
       new TWEEN.Tween(cube.position)
-        .to(getOpenPosition(idx), 2222)
+        .to(getOpenPosition(idx), 999)
         .easing(TWEEN.Easing.Circular.Out)
         .start();
     })
     new TWEEN.Tween(group.rotation)
-      .to({ y: 0 }, 2222)
+      .to({ y: 0.0, x: 0.0, z: 0 }, 2222)
+      .easing(TWEEN.Easing.Circular.Out)
+      .start();
+  }
+
+  function hover() {
+    menuItems.forEach((cube, idx) => {
+      new TWEEN.Tween(cube.position)
+        .to(getHoverPosition(idx), 666)
+        .easing(TWEEN.Easing.Circular.Out)
+        .start();
+    })
+    new TWEEN.Tween(group.rotation)
+      .to({ y: -Math.PI / 4, x: Math.PI / 4, z: 0 }, 2222)
       .easing(TWEEN.Easing.Circular.Out)
       .start();
   }
@@ -93,18 +117,33 @@ export const create_menu = function (scene: any) {
     isInOpenMode = false;
     menuItems.forEach((cube, idx) => {
       new TWEEN.Tween(cube.position)
-        .to(getClosePosition(idx), 2222)
+        .to(getClosePosition(idx), 999)
         .easing(TWEEN.Easing.Circular.Out)
         .start();
     })
-    // new TWEEN.Tween(group.rotation)
-    //   .to({ y: 0 }, 2222)
-    //   .easing(TWEEN.Easing.Circular.Out)
-    //   .start();
+    new TWEEN.Tween(group.rotation)
+      .to({ y: Math.PI / 4, x: 0.0, z: 0 }, 2222)
+      .easing(TWEEN.Easing.Circular.Out)
+      .start();
+  }
+  function toggle() {
+    if (isInOpenMode)
+      close()
+    else
+      open()
+  }
+  function relax() {
+    if (isInOpenMode)
+      open();
+    else
+      close();
   }
 
   return {
     open,
-    close
+    close,
+    hover,
+    relax,
+    toggle
   };
 }

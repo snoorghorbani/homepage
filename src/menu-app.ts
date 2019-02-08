@@ -32,6 +32,9 @@ class MenuApp {
 	private readonly raycaster = new THREE.Raycaster();
 	private readonly scene = new THREE.Scene();
 	private readonly camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
+	private light;
+	private light2;
+	private radius = 0;
 
 
 	private controls: OrbitControls;
@@ -46,8 +49,6 @@ class MenuApp {
 		this.setup_camera();
 		this.setup_lights();
 		this.setup_controls()
-		var axesHelper = new THREE.AxesHelper(55);
-		this.scene.add(axesHelper);
 		// var axesHelper = new THREE.Mesh
 		// 	(new THREE.SphereGeometry(20, 22, 22),
 		// 		new THREE.MeshNormalMaterial({ wireframe: false }));
@@ -60,15 +61,29 @@ class MenuApp {
 
 
 	private setup_lights() {
-		var light = new THREE.PointLight(0xffffff, 100, 1000);
-		light.position.set(400, -400, 400);
-		light.castShadow = true;
-		// light.shadow.mapSize.width = 1024; // default is 512
-		// light.shadow.mapSize.height = 1024;
-		this.scene.add(light);
+		this.light = new THREE.SpotLight(0xffffff, 1, 500);
+		this.light.position.set(50, -50, 50);
+		this.light.castShadow = true;
+		this.light.shadow.mapSize.width = 1024; // default is 512
+		this.light.shadow.mapSize.height = 1024;
+		this.scene.add(this.light);
+		this.scene.add(
+			new THREE.PointLightHelper(this.light)
+		)
+		// T.MeshStandardMaterial
+		this.light2 = new T.SpotLight(0xffffff, 1, 500);
+		this.light2.position.set(100, 100, 300);
+		this.light2.castShadow = true;
+		this.light2.shadow.mapSize.width = 1024; // default is 512
+		this.light2.shadow.mapSize.height = 1024;
+		this.scene.add(
+			new THREE.PointLightHelper(this.light2)
+		)
+		this.scene.add(this.light2);
 	}
 	private setup_camera() {
-		this.camera.position.set(0, 0, 300);
+		// this.camera.position.set(300, -300, 300);
+		this.camera.position.set(0,0, 300);
 		this.camera.lookAt(0, 0, 0);
 		this.scene.add(this.camera);
 	}
@@ -78,11 +93,14 @@ class MenuApp {
 		this.camera.updateProjectionMatrix();
 	}
 	private _handleMenu() {
-		renderer.domElement.addEventListener('mouseenter', (event)=> {
-			this.menu.open()
+		renderer.domElement.addEventListener('mouseenter', (event) => {
+			this.menu.hover();
 		}, false);
-		renderer.domElement.addEventListener('mouseout', (event)=> {
-			this.menu.close()
+		renderer.domElement.addEventListener('click', (event) => {
+			this.menu.toggle();
+		}, false);
+		renderer.domElement.addEventListener('mouseout', (event) => {
+			this.menu.relax();
 		}, false);
 	}
 	private animate() {
@@ -102,8 +120,8 @@ class MenuApp {
 	}
 	private render() {
 		debugger;
-		this.raycaster.setFromCamera(mouse, this.camera);
-		var intersects = this.raycaster.intersectObjects(this.scene.children);
+		// this.raycaster.setFromCamera(mouse, this.camera);
+		// var intersects = this.raycaster.intersectObjects(this.scene.children);
 		// if (intersects.length > 0) {
 		// 	if (INTERSECTED != intersects[0].object) {
 		// 		if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
@@ -119,6 +137,14 @@ class MenuApp {
 		// 		if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
 		// 	INTERSECTED = null;
 		// }
+		this.radius += .03
+		this.radius = this.radius % 360;
+		this.light.position.x = Math.sin(this.radius) * 100;
+		this.light.position.z = Math.cos(this.radius) * 100;
+		this.light.position.y = 0;
+		this.light2.position.y = Math.cos(this.radius) * 100;
+		this.light2.position.z = Math.sin(this.radius) * 100;
+		this.light2.position.x = 0;
 		renderer.render();
 		this.adjustCanvasSize();
 	}
