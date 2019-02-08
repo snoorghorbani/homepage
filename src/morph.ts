@@ -60,7 +60,6 @@ export const morph_test = (scene) => {
         TWEEN.update();
     }
 
-    var xx= {a:0}
     function startTweens(mouseAngle:number) {
         // cube.morphTargetInfluences[0] =1
         new TWEEN.Tween(cube.morphTargetInfluences)

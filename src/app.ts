@@ -10,9 +10,12 @@ import { Renderer } from './renderer';
 import { morph_test } from './morph';
 import './menu-app';
 
-const renderer = Renderer("mainCanvas",{
-	width:innerWidth,
-	height:innerHeight
+const width = innerWidth;
+const height = innerHeight;
+
+const renderer = Renderer("mainCanvas", {
+	width,
+	height
 });
 
 declare const TWEEN: any;
@@ -23,7 +26,7 @@ declare const BAS: any;
 
 class App {
 	private readonly scene = new THREE.Scene();
-	private readonly camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 10000);
+	private readonly camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
 
 
 	private brick: T.Mesh;
@@ -31,10 +34,12 @@ class App {
 	private plate: T.Mesh;
 	private controls: OrbitControls;
 
+
+
 	constructor() {
 		renderer.config({
-			width: innerWidth,
-			height: innerHeight,
+			width,
+			height,
 			scene: this.scene,
 			camera: this.camera
 		});
@@ -43,10 +48,11 @@ class App {
 		// this.setup_helpers();
 		this.setup_camera();
 		this.create_objects();
-		// this.setup_lights();
+		this.setup_lights();
 
-		create_menu(this.scene);
-		morph_test(this.scene);
+		var menu = create_menu(this.scene);
+
+		// morph_test(this.scene);
 		// circleWave(this.scene, {
 		// 	wavesAmount: 12,
 		// 	wavesHeight: 1,
@@ -63,7 +69,7 @@ class App {
 		// 	gap: 9,
 		// 	z: true
 		// });
-		this.scene_text_to_shape();
+		// this.scene_text_to_shape();
 		// this.scene_transform_prefabs();
 		// this.scene_break_shape();
 		// this.scene_multi_prefabs();
@@ -169,7 +175,7 @@ class App {
 
 	private adjustCanvasSize() {
 		renderer.config;
-		this.camera.aspect = innerWidth / innerHeight;
+		this.camera.aspect = width / height;
 		this.camera.updateProjectionMatrix();
 	}
 
