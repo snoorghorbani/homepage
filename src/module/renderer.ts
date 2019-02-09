@@ -1,5 +1,5 @@
-import { Utility } from './utility/index';
-import { Helper } from './helper/index';
+import { Utility } from '../utility/index';
+import { Helper } from '../helper/index';
 
 declare const Power0: any;
 declare const THREE: any;

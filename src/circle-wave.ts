@@ -1,5 +1,6 @@
 import { Utility } from './utility/index';
 import { Helper } from './helper/index';
+import { StateHandler } from './module/state';
 
 declare const Power0: any;
 declare const THREE: any;
@@ -201,4 +202,14 @@ export const circleWave = function (scene, config: IConfig) {
 	buildCircle();
 	loop();
 	cloneCircle();
+
+	StateHandler.on("open_menu", () => {
+		config.radius = 150;
+		setTimeout(startTweens,222);
+	});
+	StateHandler.on("close_menu", () => {
+		config.radius = 44;
+		setTimeout(startTweens,222);
+	});
+
 };

@@ -1,3 +1,5 @@
+ import * as menuItemsHandler from './menu-items';
+import { StateHandler } from './module/state';
 //  import * as T from 'three';
 declare const PNLTRI: any
 declare const Power1: any
@@ -85,6 +87,7 @@ export const create_menu = function (scene: any) {
   }
 
   function open() {
+    StateHandler.goto("open_menu");
     isInOpenMode = true;
     menuItems.forEach((cube, idx) => {
       new TWEEN.Tween(cube.position)
@@ -112,6 +115,7 @@ export const create_menu = function (scene: any) {
   }
 
   function close() {
+    StateHandler.goto("close_menu");
     isInOpenMode = false;
     menuItems.forEach((cube, idx) => {
       new TWEEN.Tween(cube.position)

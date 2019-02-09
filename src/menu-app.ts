@@ -2,7 +2,7 @@ import * as T from 'three';
 import { OrbitControls } from './js/controls/OrbitControls';
 import { _text_animation } from './triangulate';
 import { create_menu } from './menu';
-import { Renderer } from './renderer';
+import { Renderer } from './module/renderer';
 
 
 let renderer;
@@ -16,7 +16,7 @@ declare const BAS: any;
 class MenuApp {
 	width = 100;
 	height = 100;
-
+	state: { isOpen: boolean }
 	private readonly raycaster = new THREE.Raycaster();
 	private readonly scene = new THREE.Scene();
 	private readonly camera = new THREE.PerspectiveCamera(45, this.width / this.height, 0.1, 10000);
@@ -115,9 +115,9 @@ class MenuApp {
 	}
 
 	private maximize() {
-		setInterval(()=>{
-			renderer.dim(this.width,this.height)
-		},11)
+		setInterval(() => {
+			renderer.dim(this.width, this.height)
+		}, 11)
 		new TWEEN.Tween(this)
 			.to({ width: innerWidth, height: innerHeight }, 999)
 			.easing(TWEEN.Easing.Circular.Out)

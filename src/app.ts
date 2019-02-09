@@ -1,3 +1,4 @@
+import { StateHandler } from './module/state';
 import * as T from 'three';
 import { OrbitControls } from './js/controls/OrbitControls';
 import { _text_animation } from './triangulate';
@@ -6,12 +7,12 @@ import { create_menu } from './menu';
 import { Helper } from './helper/index';
 import { Curve } from './helper/curve';
 import { circleWave } from './circle-wave';
-import { Renderer } from './renderer';
+import { Renderer } from './module/renderer';
 import { morph_test } from './morph';
 import './menu-app';
 import { SolidWireframeMaterial } from './helper/wireframe';
 import { Scene } from 'three';
-import { create_menu_items } from './menu-items';
+import * as menuItems from './menu-items';
 
 declare const TWEEN: any;
 declare const THREE: any;
@@ -27,19 +28,27 @@ const renderer = Renderer("mainCanvas", {
 	height
 });
 
+
+
 class App {
 	private readonly scene = new THREE.Scene();
 	private readonly camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
+	// private projector = new THREE.Projector();
 
-
+	private selectedMenuItem: any;
 	private brick: T.Mesh;
 	private brickGeo: T.Geometry;
 	private plate: T.Mesh;
 	private controls: OrbitControls;
-
-
+	private INTERSECTED: any;
+	noramlMouse: { x: number, y: number } = { x: -1, y: -1 }
 
 	constructor() {
+		document.body.addEventListener("mousemove", (event) => {
+			this.noramlMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+			this.noramlMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+		});
+
 		renderer.config({
 			width,
 			height,
@@ -65,7 +74,7 @@ class App {
 		// this.helper_wireframe_shader();
 		// Helper.instansedPrefabs(this.scene);
 		// Curve(this.scene);
-		create_menu_items(this.scene);
+		menuItems.create_menu_items(this.scene);
 		/**
 		 * 
 		 */
@@ -75,8 +84,8 @@ class App {
 	private scene_circle_wave() {
 		circleWave(this.scene, {
 			wavesAmount: 12,
-			wavesHeight: 1,
-			circlesAmount: 66,
+			wavesHeight: 5,
+			circlesAmount: 33,
 			circlesSpacing: 2,
 			lineWidth: 1,
 			opacityCoeff: 0.4,
@@ -86,7 +95,7 @@ class App {
 			colorCoeff: 1,
 			tweenDelay: 1500,
 			circleResolution: 360,
-			gap: 9,
+			gap: 2,
 			z: true
 		});
 	}
@@ -212,7 +221,7 @@ class App {
 			// this.camera.position.y = oldY - angleY;
 
 			new TWEEN.Tween(this.camera.position)
-				.to({ x: oldX - angleX, y: oldY - angleY }, 2222)
+				.to({ x: oldX - angleX, y: oldY - angleY }, 1111)
 				.easing(TWEEN.Easing.Linear.None)
 				.onUpdate((frame: any) => {
 					this.camera.position.set(frame.x, frame.y, frame.z);
@@ -245,6 +254,7 @@ class App {
 		requestAnimationFrame(() => {
 			this.animate();
 		});
+		this.reycast();
 		this.render();
 	}
 
@@ -320,6 +330,50 @@ class App {
 		geom.verticesNeedUpdate = true;
 		geom.normalsNeedUpdate = true;
 		return geom;
+	}
+
+	private reycast() {
+		var vector = new THREE.Vector3(this.noramlMouse.x, this.noramlMouse.y, 1);
+		vector.unproject(this.camera);
+		var ray = new THREE.Raycaster(this.camera.position, vector.sub(this.camera.position).normalize());
+
+		// create an array containing all objects in the scene with which the ray intersects
+		var intersects = ray.intersectObjects(this.scene.children, true);
+
+		// INTERSECTED = the object in the scene currently closest to the camera 
+		//      and intersected by the Ray projected from the mouse position    
+		// if there is one (or more) intersections
+		if (intersects.length > 0) {
+			// if the closest object intersected is not the currently stored intersection object
+			if (intersects[0].object != this.INTERSECTED) {
+				// restore previous intersection object (if it exists) to its original color
+				if (this.INTERSECTED) {
+					// this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
+					this.INTERSECTED.material.color.setHex(0xff0033);
+				}
+				// store reference to closest object as current intersection object
+				console.log(intersects[0].object.constructor.name);
+				if (intersects[0].object.parent._type == "menuItem") {
+					this.INTERSECTED = intersects[0].object;
+					this.selectedMenuItem = this.INTERSECTED.parent.name;
+					console.log(this.selectedMenuItem)
+					StateHandler.goto("about_me");
+					// store color of closest object (for later restoration)
+					this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex();
+					// set a new color for closest object
+					this.INTERSECTED.material.color.setHex(0xff0033);
+				}
+			}
+		}
+		else // there are no intersections
+		{
+			// restore previous intersection object (if it exists) to its original color
+			if (this.INTERSECTED)
+				this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
+			// remove previous intersection object reference
+			//     by setting current intersection object to "nothing"
+			this.INTERSECTED = null;
+		}
 	}
 }
 
