@@ -10,6 +10,8 @@ import { Renderer } from './renderer';
 import { morph_test } from './morph';
 import './menu-app';
 import { SolidWireframeMaterial } from './helper/wireframe';
+import { Scene } from 'three';
+import { create_menu_items } from './menu-items';
 
 declare const TWEEN: any;
 declare const THREE: any;
@@ -48,12 +50,29 @@ class App {
 		this.setup_controls();
 		// this.setup_helpers();
 		this.setup_camera();
-		this.create_objects();
 		this.setup_lights();
 
-		// var menu = create_menu(this.scene);
 
+		// var menu = create_menu(this.scene);
 		//  morph_test(this.scene);
+		this.scene_circle_wave();
+		// this.scene_text_to_shape();
+		// this.scene_transform_prefabs();
+		// this.scene_break_shape();
+		// this.scene_multi_prefabs();
+
+		// this.scene_wireframe_multimaterial_obejct();
+		// this.helper_wireframe_shader();
+		// Helper.instansedPrefabs(this.scene);
+		// Curve(this.scene);
+		create_menu_items(this.scene);
+		/**
+		 * 
+		 */
+		this.animate();
+	}
+
+	private scene_circle_wave() {
 		circleWave(this.scene, {
 			wavesAmount: 12,
 			wavesHeight: 1,
@@ -63,30 +82,35 @@ class App {
 			opacityCoeff: 0.4,
 			color: '#fc1b6a',
 			dev: true,
-			radius: 4,
+			radius: 66,
 			colorCoeff: 1,
 			tweenDelay: 1500,
 			circleResolution: 360,
 			gap: 9,
 			z: true
 		});
-		// this.scene_text_to_shape();
-		// this.scene_transform_prefabs();
-		// this.scene_break_shape();
-		// this.scene_multi_prefabs();
+	}
 
-		// Curve(this.scene);
-
-		// Helper.instansedPrefabs(this.scene);
-
+	private helper_wireframe_shader() {
 		var geo = new THREE.BoxBufferGeometry(20, 20, 20);
 		var _mat = SolidWireframeMaterial(geo);
 		this.scene.add(new THREE.Mesh(geo, _mat));
+	}
 
-		/**
-		 * 
-		 */
-		this.animate();
+	private scene_wireframe_multimaterial_obejct() {
+		var geo = new THREE.BoxBufferGeometry(20, 20, 20);
+		var darkMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1, side: THREE.BackSide });
+		var wireframeMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true, wireframeLinewidth: 11, transparent: true });
+		var multiMaterial = [darkMaterial, wireframeMaterial];
+		var outlineMaterial1 = new THREE.MeshBasicMaterial({
+			color: 0xf63a5b,
+			side: THREE.BackSide
+		});
+		var outlineMesh1 = new THREE.Mesh(geo, outlineMaterial1);
+		outlineMesh1.scale.multiplyScalar(1.13);
+		this.scene.add(outlineMesh1);
+		var sphere = THREE.SceneUtils.createMultiMaterialObject(geo.clone(), multiMaterial);
+		this.scene.add(sphere);
 	}
 
 	private scene_multi_prefabs() {
@@ -138,26 +162,12 @@ class App {
 	}
 
 	private setup_lights() {
-		var light = new THREE.PointLight(0x00ffff, 100, 1000);
-		light.position.set(0, 0, 300);
+		var light = new THREE.PointLight(0x00ff00, 1, 1000);
+		light.position.set(0, 0, 100);
 		light.castShadow = true;
 		light.shadow.mapSize.width = 1024; // default is 512
 		light.shadow.mapSize.height = 1024;
 		this.scene.add(light);
-	}
-
-	private create_objects() {
-		// var brickGeo = this.brickGeo = new THREE.SphereGeometry(20, 20, 20)
-		// this.brick = new THREE.Mesh(brickGeo, new THREE.MeshNormalMaterial({ wireframe: false }));
-		// this.brick.position.set(0, 0, 30);
-		// this.brick.castShadow = true;
-		// this.brick.receiveShadow = true;
-		// this.scene.add(this.brick);
-		// this.plate = new THREE.Mesh(new THREE.PlaneGeometry(200, 200, 20, 20));
-		// this.plate.material = new THREE.MeshLambertMaterial({ color: 0xff00ff });
-		// this.plate.castShadow = true;
-		// this.plate.receiveShadow = true;
-		// this.scene.add(this.plate);
 	}
 
 	private setup_camera() {
@@ -167,12 +177,48 @@ class App {
 	}
 
 	private setup_controls() {
-		this.controls = new THREE.OrbitControls(this.camera, renderer.domElement);
-		this.controls.target.set(0, 0.5, 0);
-		this.controls.rotateSpeed = 1.0;
-		this.controls.zoomSpeed = 1.2;
-		this.controls.keyPanSpeed = 0.8;
-		this.controls.enablePan = false;
+		var oldX = this.camera.position.x;
+		var oldY = this.camera.position.y;
+		document.body.addEventListener("mousemove", (event) => {
+			var maxAngle = 45;
+			var x = event.clientX;
+			var y = event.clientY;
+			var jahateX, deltaX, rateX;
+			var jahateY, deltaY, rateY;
+
+			if (x > innerWidth / 2) {
+				jahateX = 1;
+				deltaX = innerWidth - x;
+				rateX = 1 - (deltaX / (innerWidth / 2));
+			} else {
+				jahateX = -1;
+				deltaX = -x;
+				rateX = 1 + (deltaX / (innerWidth / 2));
+			}
+
+			if (y > innerHeight / 2) {
+				jahateY = -1;
+				deltaY = innerHeight - y;
+				rateY = 1 - (deltaY / (innerHeight / 2));
+			} else {
+				jahateY = 1;
+				deltaY = -y;
+				rateY = 1 + (deltaY / (innerHeight / 2));
+			}
+
+			var angleX = jahateX * rateX * maxAngle;
+			this.camera.position.x = oldX - angleX;
+			var angleY = jahateY * rateY * maxAngle;
+			this.camera.position.y = oldY - angleY;
+			this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+		});
+
+		// this.controls = new THREE.OrbitControls(this.camera, renderer.domElement);
+		// this.controls.target.set(0, 0.5, 0);
+		// this.controls.rotateSpeed = 1.0;
+		// this.controls.zoomSpeed = 1.2;
+		// this.controls.keyPanSpeed = 0.8;
+		// this.controls.enablePan = false;
 	}
 
 	private adjustCanvasSize() {

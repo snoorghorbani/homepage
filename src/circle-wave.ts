@@ -193,10 +193,10 @@ export const circleWave = function (scene, config: IConfig) {
 		requestAnimationFrame(loop);
 	}
 
-	document.body.onmousemove = function (event) {
+	document.body.addEventListener("mousemove", function (event) {
 		mouseAngle = Utility.angle.getAngle(event.pageX, event.pageY);
 		startTweens();
-	};
+	});
 
 	buildCircle();
 	loop();

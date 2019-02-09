@@ -23,7 +23,7 @@ class _Renderer {
 
 		this.renderer = new THREE.WebGLRenderer({
 			antialias: true,
-			alpha:true,
+			alpha: true,
 			canvas: <HTMLCanvasElement>document.getElementById(canvasId)
 		});
 		this.domElement = this.renderer.domElement;
@@ -34,10 +34,15 @@ class _Renderer {
 	public config_renderer() {
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-		this.renderer.setPixelRatio( window.devicePixelRatio );
+		this.renderer.setPixelRatio(window.devicePixelRatio);
 
 		this.renderer.setSize(this.width, this.height);
 		// this.renderer.setClearColor(new THREE.Color('rgb(256,0,0)'));
+	}
+	public dim(w: number, h: number) {
+		this.width = w;
+		this.height = h;
+		this.renderer.setSize(this.width, this.height);
 	}
 
 	public config({ scene, camera, width, height }) {
@@ -58,7 +63,7 @@ class _Renderer {
 	}
 }
 
-const renederes = {}
+const renederes: { [name: string]: _Renderer } = {}
 
 export const Renderer = function (name: string, { width, height }) {
 
