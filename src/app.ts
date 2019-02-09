@@ -207,9 +207,23 @@ class App {
 			}
 
 			var angleX = jahateX * rateX * maxAngle;
-			this.camera.position.x = oldX - angleX;
+			// this.camera.position.x = oldX - angleX;
 			var angleY = jahateY * rateY * maxAngle;
-			this.camera.position.y = oldY - angleY;
+			// this.camera.position.y = oldY - angleY;
+
+			new TWEEN.Tween(this.camera.position)
+				.to({ x: oldX - angleX, y: oldY - angleY }, 2222)
+				.easing(TWEEN.Easing.Linear.None)
+				.onUpdate((frame: any) => {
+					this.camera.position.set(frame.x, frame.y, frame.z);
+					this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+				})
+				.onComplete(() => {
+					this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+				})
+				.start();
+
+
 			this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 		});
 
@@ -240,7 +254,7 @@ class App {
 
 		// this.brick.rotateZ(0.03);
 		// this.controls.update();
-		// TWEEN.update();
+		TWEEN.update();
 	}
 
 	private move_camera() {
@@ -255,7 +269,7 @@ class App {
 			y: from.y,
 			z: from.z + 500
 		};
-		var tween = new TWEEN.Tween(from)
+		new TWEEN.Tween(from)
 			.to(to, 2222)
 			.easing(TWEEN.Easing.Linear.None)
 			.onUpdate((frame: any) => {
