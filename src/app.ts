@@ -11,8 +11,8 @@ import { Renderer } from './module/renderer';
 import { morph_test } from './morph';
 import './menu-app';
 import { SolidWireframeMaterial } from './helper/wireframe';
-import { Scene } from 'three';
 import * as menuItems from './menu-items';
+import * as Interaction from './module/interaction';
 
 declare const TWEEN: any;
 declare const THREE: any;
@@ -44,6 +44,7 @@ class App {
 	noramlMouse: { x: number, y: number } = { x: -1, y: -1 }
 
 	constructor() {
+		Interaction.setup(this.camera, renderer);
 		document.body.addEventListener("mousemove", (event) => {
 			this.noramlMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
 			this.noramlMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -356,8 +357,8 @@ class App {
 				if (intersects[0].object.parent._type == "menuItem") {
 					this.INTERSECTED = intersects[0].object;
 					this.selectedMenuItem = this.INTERSECTED.parent.name;
-					console.log(this.selectedMenuItem)
-					StateHandler.goto("about_me");
+					// console.log(this.selectedMenuItem)
+					// StateHandler.goto("about_me");
 					// store color of closest object (for later restoration)
 					this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex();
 					// set a new color for closest object

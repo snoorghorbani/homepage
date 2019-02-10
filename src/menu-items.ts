@@ -1,4 +1,5 @@
 import { StateHandler } from "./module/state";
+import { Interaction } from "./module/interaction";
 
 //  import * as T from 'three';
 declare const THREE: any;
@@ -7,7 +8,7 @@ declare const TWEEN: any;
 let scene;
 let menuItems = [];
 let clickableItems = [];
-
+const interaction = new Interaction();
 
 function generateTextGeometry(text: string, font: any) {
   var params = {
@@ -50,11 +51,10 @@ const create_menu_item = function ({ title, font }) {
    */
   var boxGeoOpen = new THREE.CubeGeometry(200, 30, 0);
   var boxGeoClose = new THREE.CubeGeometry(0.001, 0, 0);
-  var boxGeoMax = new THREE.CubeGeometry(200, 200, 0);
+  var boxGeoMax = new THREE.CubeGeometry(0, 170, 0);
   boxGeoClose.morphTargets[0] = { name: 'open', vertices: boxGeoOpen.vertices };
   boxGeoClose.morphTargets[1] = { name: 'max', vertices: boxGeoMax.vertices };
   boxGeoClose.computeMorphNormals();
-
   var box = new THREE.Mesh(boxGeoClose, new THREE.MeshBasicMaterial({ color: 0xfc1b6a, wireframe: false, transparent: true, opacity: 1, morphTargets: true }));
   box.morphTargetInfluences[0] = 0;
   box.position.z = -30;
@@ -69,6 +69,12 @@ const create_menu_item = function ({ title, font }) {
     new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: false, transparent: true, opacity: 0, morphTargets: false })
   );
   clickable.position.z = -30;
+  clickable.onClick = function () {
+    debugger;
+    console.log(clickable.parent.name);
+    StateHandler.goto(clickable.parent.name)
+  }
+  interaction.onClick(clickable);
   clickableItems.push(clickable);
   menuItem.add(clickable);
 
