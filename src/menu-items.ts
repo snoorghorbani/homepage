@@ -1,5 +1,6 @@
 import { StateHandler } from "./module/state";
 import { Interaction } from "./module/interaction";
+import { Utility } from "./utility/index";
 
 //  import * as T from 'three';
 declare const THREE: any;
@@ -51,11 +52,12 @@ const create_menu_item = function ({ title, font }) {
    */
   var boxGeoOpen = new THREE.CubeGeometry(200, 30, 0);
   var boxGeoClose = new THREE.CubeGeometry(0.001, 0, 0);
-  var boxGeoMax = new THREE.CubeGeometry(0, 170, 0);
+  var boxGeoMax = new THREE.CubeGeometry(400, 400, 0);
   boxGeoClose.morphTargets[0] = { name: 'open', vertices: boxGeoOpen.vertices };
   boxGeoClose.morphTargets[1] = { name: 'max', vertices: boxGeoMax.vertices };
   boxGeoClose.computeMorphNormals();
-  var box = new THREE.Mesh(boxGeoClose, new THREE.MeshBasicMaterial({ color: 0xfc1b6a, wireframe: false, transparent: true, opacity: 1, morphTargets: true }));
+  // var box = new THREE.Mesh(boxGeoClose, new THREE.MeshBasicMaterial({ color: 0xfc1b6a, wireframe: false, transparent: true, opacity: 1, morphTargets: true }));
+  var box = new THREE.Mesh(boxGeoClose, new THREE.MeshBasicMaterial({ color: Utility.color.random(), wireframe: false, transparent: true, opacity: 1, morphTargets: true }));
   box.morphTargetInfluences[0] = 0;
   box.position.z = -30;
   menuItem.add(box);
@@ -122,7 +124,7 @@ export const open = function () {
       const obj = item.children[j];
       if (obj.morphTargetInfluences)
         new TWEEN.Tween(obj.morphTargetInfluences)
-          .to({ 0: 1 }, 1111)
+          .to({ 0: 1, 1: 0 }, 1111)
           .easing(TWEEN.Easing.Circular.Out)
           .start();
     }
@@ -137,7 +139,7 @@ export const close = function () {
       const obj = item.children[j];
       if (obj.morphTargetInfluences)
         new TWEEN.Tween(obj.morphTargetInfluences)
-          .to({ 0: 0 }, 1111)
+          .to({ 0: 0, 1: 0 }, 1111)
           .easing(TWEEN.Easing.Circular.Out)
           .start();
     }
@@ -145,13 +147,13 @@ export const close = function () {
   hiddenClickableObjects();
 }
 
-export const maximize_about_us = function () {
+export const maximize_item = function (name: string) {
   // StateHandler.goto("close_menu");
   hiddenClickableObjects();
   for (let i = 0; i < menuItems.length; i++) {
     const item = menuItems[i];
     debugger;
-    if (item.name == "About Me") {
+    if (item.name == name) {
       for (let j = 0; j < item.children.length; j++) {
         const obj = item.children[j];
         if (obj.morphTargetInfluences)
@@ -161,15 +163,13 @@ export const maximize_about_us = function () {
             .start();
       }
     }
-    else {
-      for (let j = 0; j < item.children.length; j++) {
-        const obj = item.children[j];
-        if (obj.morphTargetInfluences)
-          new TWEEN.Tween(obj.morphTargetInfluences)
-            .to({ 0: 0 }, 1111)
-            .easing(TWEEN.Easing.Circular.Out)
-            .start();
-      }
+    for (let j = 0; j < item.children.length; j++) {
+      const obj = item.children[j];
+      if (obj.morphTargetInfluences)
+        new TWEEN.Tween(obj.morphTargetInfluences)
+          .to({ 0: 0 }, 1111)
+          .easing(TWEEN.Easing.Circular.Out)
+          .start();
     }
   }
 }
@@ -188,7 +188,6 @@ function getVerticesFromCenter(_geometry) {
   geometry.verticesNeedUpdate = true;
   return geometry;
 }
-
 function getCenterPoint(geometry) {
   var middle = new THREE.Vector3();
   geometry.computeBoundingBox();
@@ -208,4 +207,6 @@ function showClickableObjects() {
 
 StateHandler.on("open_menu", open);
 StateHandler.on("close_menu", close);
-StateHandler.on("about_me", maximize_about_us);
+StateHandler.on("About Me", () => { maximize_item("About Me") });
+StateHandler.on("Hello, Word", () => { maximize_item("Hello, Word") });
+StateHandler.on("My Experiences", () => { maximize_item("My Experiences") });
