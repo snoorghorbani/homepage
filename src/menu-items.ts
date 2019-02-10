@@ -52,7 +52,7 @@ const create_menu_item = function ({ title, font }) {
    */
   var boxGeoOpen = new THREE.CubeGeometry(200, 30, 0);
   var boxGeoClose = new THREE.CubeGeometry(0.001, 0, 0);
-  var boxGeoMax = new THREE.CubeGeometry(400, 400, 0);
+  var boxGeoMax = new THREE.CubeGeometry(200, 300, 0);
   boxGeoClose.morphTargets[0] = { name: 'open', vertices: boxGeoOpen.vertices };
   boxGeoClose.morphTargets[1] = { name: 'max', vertices: boxGeoMax.vertices };
   boxGeoClose.computeMorphNormals();
