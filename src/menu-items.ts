@@ -47,17 +47,30 @@ const create_menu_item = function ({ title, font }) {
   menuItem.name = title;
   menuItem._type = "menuItem";
 
+
+  /**
+   * title
+   */
+  var titleGeoOpen = generateTextGeometry(title, font);
+  var titleGeoClose = getVerticesFromCenter(titleGeoOpen);
+  titleGeoClose.morphTargets[0] = { name: 'open', vertices: titleGeoOpen.vertices };
+  titleGeoClose.computeMorphNormals();
+  var title = new THREE.Mesh(titleGeoClose, new THREE.MeshBasicMaterial({ color: 0xffffff, morphTargets: true }));
+  title.morphTargetInfluences[0] = 0;
+  menuItem.add(title);
+  debugger;
   /**
    * box
    */
-  var boxGeoOpen = new THREE.CubeGeometry(200, 30, 0);
+  var boxGeoOpen = new THREE.CubeGeometry(
+    Math.abs(titleGeoOpen.boundingBox.min.x) + Math.abs(titleGeoOpen.boundingBox.max.x) + 30, 30, 0);
   var boxGeoClose = new THREE.CubeGeometry(0.001, 0, 0);
   var boxGeoMax = new THREE.CubeGeometry(200, 300, 0);
   boxGeoClose.morphTargets[0] = { name: 'open', vertices: boxGeoOpen.vertices };
   boxGeoClose.morphTargets[1] = { name: 'max', vertices: boxGeoMax.vertices };
   boxGeoClose.computeMorphNormals();
-  // var box = new THREE.Mesh(boxGeoClose, new THREE.MeshBasicMaterial({ color: 0xfc1b6a, wireframe: false, transparent: true, opacity: 1, morphTargets: true }));
-  var box = new THREE.Mesh(boxGeoClose, new THREE.MeshBasicMaterial({ color: Utility.color.random(), wireframe: false, transparent: true, opacity: 1, morphTargets: true }));
+  var box = new THREE.Mesh(boxGeoClose, new THREE.MeshBasicMaterial({ color: 0xfc1b6a, wireframe: false, transparent: true, opacity: 1, morphTargets: true }));
+  // var box = new THREE.Mesh(boxGeoClose, new THREE.MeshBasicMaterial({ color: Utility.color.random(), wireframe: false, transparent: true, opacity: 1, morphTargets: true }));
   box.morphTargetInfluences[0] = 0;
   box.position.z = -30;
   menuItem.add(box);
@@ -80,16 +93,6 @@ const create_menu_item = function ({ title, font }) {
   clickableItems.push(clickable);
   menuItem.add(clickable);
 
-  /**
-   * title
-   */
-  var titleGeoOpen = generateTextGeometry(title, font);
-  var titleGeoClose = getVerticesFromCenter(titleGeoOpen);
-  titleGeoClose.morphTargets[0] = { name: 'open', vertices: titleGeoOpen.vertices };
-  titleGeoClose.computeMorphNormals();
-  var title = new THREE.Mesh(titleGeoClose, new THREE.MeshBasicMaterial({ color: 0xffffff, morphTargets: true }));
-  title.morphTargetInfluences[0] = 0;
-  menuItem.add(title);
 
   menuItem.position.y = (index * -40) + 50;
   menuItems.push(menuItem);

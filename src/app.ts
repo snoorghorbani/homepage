@@ -6,6 +6,7 @@ import { multi_prefab } from './multi-prefab';
 import { create_menu } from './menu';
 import { Helper } from './helper/index';
 import { Curve } from './helper/curve';
+import { circleWave as circleWave1 } from './circle-wave.1';
 import { circleWave } from './circle-wave';
 import { Renderer } from './module/renderer';
 import { morph_test } from './morph';
@@ -65,9 +66,9 @@ class App {
 
 		// var menu = create_menu(this.scene);
 		//  morph_test(this.scene);
-		this.scene_circle_wave();
+		// this.scene_circle_wave();
 		// this.scene_text_to_shape();
-		// this.scene_transform_prefabs();
+		this.scene_transform_prefabs();
 		// this.scene_break_shape();
 		// this.scene_multi_prefabs();
 
@@ -75,7 +76,7 @@ class App {
 		// this.helper_wireframe_shader();
 		// Helper.instansedPrefabs(this.scene);
 		// Curve(this.scene);
-		menuItems.create_menu_items(this.scene);
+		// menuItems.create_menu_items(this.scene);
 		/**
 		 * 
 		 */
@@ -146,11 +147,11 @@ class App {
 	}
 
 	private scene_transform_prefabs() {
-		var brickGeo = (this.brickGeo = new THREE.SphereGeometry(20, 20, 20));
+		var brickGeo = (this.brickGeo = new THREE.CubeGeometry(80, 80, 80));
 		var brick = new THREE.Mesh(brickGeo, new THREE.MeshNormalMaterial({ wireframe: true }));
-		brick.position.set(222, 100, 100);
+		// brick.position.set(222, 100, 100);
 		var prefabs = new BAS.PrefabBufferGeometry(new THREE.TetrahedronGeometry(1.0), 10000);
-		Helper.transform(this.scene, prefabs, brick, new THREE.SphereGeometry(200, 20, 20), {
+		Helper.transform(this.scene, prefabs, brick, new THREE.SphereGeometry(40, 20, 20), {
 			duration: 8.0,
 			ease: Power0.easeIn,
 			repeat: -1,

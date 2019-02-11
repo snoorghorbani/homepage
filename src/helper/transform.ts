@@ -229,7 +229,13 @@ Object.defineProperty(Animation.prototype, 'time', {
 Animation.prototype.animate = function (duration, options) {
   options = options || {};
   options.time = this.totalDuration;
-  TweenMax.fromTo(this.rotation, 4, { y: 0 }, { y: Math.PI * 2, ease: Power1.easeInOut }, 0);
+  TweenMax.fromTo(this.rotation, 4, { y: 0 }, {
+    y: Math.PI * 2,
+    //  ease: Power1.easeInOut,
+    repeat: -1,
+    // repeatDelay: 0.25,
+    yoyo: false
+  }, 0);
 
 
   return TweenMax.fromTo(this, duration, { time: 0.0 }, options);
