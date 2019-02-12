@@ -14,6 +14,8 @@ import './menu-app';
 import { SolidWireframeMaterial } from './helper/wireframe';
 import * as menuItems from './menu-items';
 import * as Interaction from './module/interaction';
+import { Scene } from 'three';
+import { Utility } from './utility/index';
 
 declare const TWEEN: any;
 declare const THREE: any;
@@ -29,11 +31,15 @@ const renderer = Renderer("mainCanvas", {
 	height
 });
 
-
+const camera = {
+	fov: 45,
+	near: 0.1,
+	far: 1000
+}
 
 class App {
 	private readonly scene = new THREE.Scene();
-	private readonly camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
+	private readonly camera = new THREE.PerspectiveCamera(camera.fov, width / height, camera.near, camera.far);
 	// private projector = new THREE.Projector();
 
 	private selectedMenuItem: any;
@@ -63,12 +69,44 @@ class App {
 		this.setup_camera();
 		this.setup_lights();
 
+		var axesHelper = new THREE.AxesHelper(55);
+		this.scene.add(axesHelper);
+
+		var xAngleInRadian = (this.camera.position.z === 0) ? 0 : Math.atan(this.camera.position.y / this.camera.position.z);
+		var yAngleInRadian = (this.camera.position.x === 0) ? 0 : Math.atan(this.camera.position.z / this.camera.position.x);
+		var zAngleInRadian = (this.camera.position.y === 0) ? 0 : Math.atan(this.camera.position.x / this.camera.position.y);
+		var xAngle = Utility.angle.toDeg(xAngleInRadian);
+		var yAngle = Utility.angle.toDeg(yAngleInRadian);
+		var zAngle = Utility.angle.toDeg(zAngleInRadian);
+		debugger;
+
+		var _height = Math.tan(Utility.angle.toRad(camera.fov / 2)) * this.camera.position.z * 2;
+		var _width = _height * width / height;
+
+		// var _geo = new THREE.CubeGeometry(360, 160, 0);
+		// var _geo1 = new THREE.CubeGeometry(_width, _height, 0);
+		var _geo1 = new THREE.CubeGeometry(33, 33, 0);
+		var _box1 = new THREE.Mesh(_geo1, new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+		_box1.rotation.x = xAngleInRadian;
+		_box1.rotation.y = yAngleInRadian;
+		debugger
+		_box1.rotation.z = zAngleInRadian;
+		this.scene.add(_box1);
+
+		var _geo = new THREE.CubeGeometry(5, 5, 0);
+		var _box = new THREE.Mesh(_geo, new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+		debugger;
+		_box.position.x = -180;
+		// _box.position.y = -80;
+		// _box.position.y = width / 2;
+		this.scene.add(_box);
+
 
 		// var menu = create_menu(this.scene);
 		//  morph_test(this.scene);
 		// this.scene_circle_wave();
 		// this.scene_text_to_shape();
-		this.scene_transform_prefabs();
+		// this.scene_transform_prefabs();
 		// this.scene_break_shape();
 		// this.scene_multi_prefabs();
 
@@ -182,68 +220,68 @@ class App {
 	}
 
 	private setup_camera() {
-		this.camera.position.set(0, 0, 200);
+		this.camera.position.set(100, 100, 0);
 		this.camera.lookAt(0, 0, 0);
 		this.scene.add(this.camera);
 	}
 
 	private setup_controls() {
-		var oldX = this.camera.position.x;
-		var oldY = this.camera.position.y;
-		document.body.addEventListener("mousemove", (event) => {
-			var maxAngle = 45;
-			var x = event.clientX;
-			var y = event.clientY;
-			var jahateX, deltaX, rateX;
-			var jahateY, deltaY, rateY;
+		// var oldX = this.camera.position.x;
+		// var oldY = this.camera.position.y;
+		// document.body.addEventListener("mousemove", (event) => {
+		// 	var maxAngle = 45;
+		// 	var x = event.clientX;
+		// 	var y = event.clientY;
+		// 	var jahateX, deltaX, rateX;
+		// 	var jahateY, deltaY, rateY;
 
-			if (x > innerWidth / 2) {
-				jahateX = 1;
-				deltaX = innerWidth - x;
-				rateX = 1 - (deltaX / (innerWidth / 2));
-			} else {
-				jahateX = -1;
-				deltaX = -x;
-				rateX = 1 + (deltaX / (innerWidth / 2));
-			}
+		// 	if (x > innerWidth / 2) {
+		// 		jahateX = 1;
+		// 		deltaX = innerWidth - x;
+		// 		rateX = 1 - (deltaX / (innerWidth / 2));
+		// 	} else {
+		// 		jahateX = -1;
+		// 		deltaX = -x;
+		// 		rateX = 1 + (deltaX / (innerWidth / 2));
+		// 	}
 
-			if (y > innerHeight / 2) {
-				jahateY = -1;
-				deltaY = innerHeight - y;
-				rateY = 1 - (deltaY / (innerHeight / 2));
-			} else {
-				jahateY = 1;
-				deltaY = -y;
-				rateY = 1 + (deltaY / (innerHeight / 2));
-			}
+		// 	if (y > innerHeight / 2) {
+		// 		jahateY = -1;
+		// 		deltaY = innerHeight - y;
+		// 		rateY = 1 - (deltaY / (innerHeight / 2));
+		// 	} else {
+		// 		jahateY = 1;
+		// 		deltaY = -y;
+		// 		rateY = 1 + (deltaY / (innerHeight / 2));
+		// 	}
 
-			var angleX = jahateX * rateX * maxAngle;
-			// this.camera.position.x = oldX - angleX;
-			var angleY = jahateY * rateY * maxAngle;
-			// this.camera.position.y = oldY - angleY;
+		// 	var angleX = jahateX * rateX * maxAngle;
+		// 	// this.camera.position.x = oldX - angleX;
+		// 	var angleY = jahateY * rateY * maxAngle;
+		// 	// this.camera.position.y = oldY - angleY;
 
-			new TWEEN.Tween(this.camera.position)
-				.to({ x: oldX - angleX, y: oldY - angleY }, 1111)
-				.easing(TWEEN.Easing.Linear.None)
-				.onUpdate((frame: any) => {
-					this.camera.position.set(frame.x, frame.y, frame.z);
-					this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-				})
-				.onComplete(() => {
-					this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-				})
-				.start();
+		// 	new TWEEN.Tween(this.camera.position)
+		// 		.to({ x: oldX - angleX, y: oldY - angleY }, 1111)
+		// 		.easing(TWEEN.Easing.Linear.None)
+		// 		.onUpdate((frame: any) => {
+		// 			this.camera.position.set(frame.x, frame.y, frame.z);
+		// 			this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+		// 		})
+		// 		.onComplete(() => {
+		// 			this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+		// 		})
+		// 		.start();
 
 
-			this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-		});
+		// 	this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+		// });
 
-		// this.controls = new THREE.OrbitControls(this.camera, renderer.domElement);
-		// this.controls.target.set(0, 0.5, 0);
-		// this.controls.rotateSpeed = 1.0;
-		// this.controls.zoomSpeed = 1.2;
-		// this.controls.keyPanSpeed = 0.8;
-		// this.controls.enablePan = false;
+		this.controls = new THREE.OrbitControls(this.camera, renderer.domElement);
+		this.controls.target.set(0, 0.5, 0);
+		this.controls.rotateSpeed = 1.0;
+		this.controls.zoomSpeed = 1.2;
+		this.controls.keyPanSpeed = 0.8;
+		this.controls.enablePan = false;
 	}
 
 	private adjustCanvasSize() {
