@@ -26,7 +26,7 @@ declare const BAS: any;
 const width = innerWidth;
 const height = innerHeight;
 
-const renderer = Renderer("mainCanvas", {
+const renderer = Renderer('mainCanvas', {
 	width,
 	height
 });
@@ -35,7 +35,7 @@ const camera = {
 	fov: 45,
 	near: 0.1,
 	far: 1000
-}
+};
 
 class App {
 	private readonly scene = new THREE.Scene();
@@ -48,12 +48,11 @@ class App {
 	private plate: T.Mesh;
 	private controls: OrbitControls;
 	private INTERSECTED: any;
-	noramlMouse: { x: number, y: number } = { x: -1, y: -1 }
-
+	noramlMouse: { x: number; y: number } = { x: -1, y: -1 };
 	constructor() {
 		Interaction.setup(this.camera, renderer);
-		document.body.addEventListener("mousemove", (event) => {
-			this.noramlMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+		document.body.addEventListener('mousemove', (event) => {
+			this.noramlMouse.x = event.clientX / window.innerWidth * 2 - 1;
 			this.noramlMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 		});
 
@@ -64,7 +63,8 @@ class App {
 			camera: this.camera
 		});
 		this.config_scene();
-		this.setup_controls();
+		// this.setup_controls();
+		this.setup_orbit_controls();
 		// this.setup_helpers();
 		this.setup_camera();
 		this.setup_lights();
@@ -72,40 +72,12 @@ class App {
 		var axesHelper = new THREE.AxesHelper(55);
 		this.scene.add(axesHelper);
 
-		var xAngleInRadian = (this.camera.position.z === 0) ? 0 : Math.atan(this.camera.position.y / this.camera.position.z);
-		var yAngleInRadian = (this.camera.position.x === 0) ? 0 : Math.atan(this.camera.position.z / this.camera.position.x);
-		var zAngleInRadian = (this.camera.position.y === 0) ? 0 : Math.atan(this.camera.position.x / this.camera.position.y);
-		var xAngle = Utility.angle.toDeg(xAngleInRadian);
-		var yAngle = Utility.angle.toDeg(yAngleInRadian);
-		var zAngle = Utility.angle.toDeg(zAngleInRadian);
-		debugger;
-
-		var _height = Math.tan(Utility.angle.toRad(camera.fov / 2)) * this.camera.position.z * 2;
-		var _width = _height * width / height;
-
-		// var _geo = new THREE.CubeGeometry(360, 160, 0);
-		// var _geo1 = new THREE.CubeGeometry(_width, _height, 0);
-		var _geo1 = new THREE.CubeGeometry(33, 33, 0);
-		var _box1 = new THREE.Mesh(_geo1, new THREE.MeshBasicMaterial({ color: 0xff0000 }));
-		_box1.rotation.x = xAngleInRadian;
-		_box1.rotation.y = yAngleInRadian;
-		debugger
-		_box1.rotation.z = zAngleInRadian;
-		this.scene.add(_box1);
-
-		var _geo = new THREE.CubeGeometry(5, 5, 0);
-		var _box = new THREE.Mesh(_geo, new THREE.MeshBasicMaterial({ color: 0xff0000 }));
-		debugger;
-		_box.position.x = -180;
-		// _box.position.y = -80;
-		// _box.position.y = width / 2;
-		this.scene.add(_box);
-
+		// this.test_quaternion();
 
 		// var menu = create_menu(this.scene);
-		//  morph_test(this.scene);
+		// morph_test(this.scene);
 		// this.scene_circle_wave();
-		// this.scene_text_to_shape();
+		this.scene_text_to_shape();
 		// this.scene_transform_prefabs();
 		// this.scene_break_shape();
 		// this.scene_multi_prefabs();
@@ -114,13 +86,39 @@ class App {
 		// this.helper_wireframe_shader();
 		// Helper.instansedPrefabs(this.scene);
 		// Curve(this.scene);
-		// menuItems.create_menu_items(this.scene);
+		menuItems.create_menu_items(this.scene,this.camera);
 		/**
 		 * 
 		 */
 		this.animate();
 	}
 
+	private test_quaternion() {
+		var xAngleInRadian = this.camera.position.z === 0 ? 0 : Math.atan(this.camera.position.y / this.camera.position.z);
+		var yAngleInRadian = this.camera.position.x === 0 ? 0 : Math.atan(this.camera.position.z / this.camera.position.x);
+		var zAngleInRadian = this.camera.position.y === 0 ? 0 : Math.atan(this.camera.position.x / this.camera.position.y);
+		var xAngle = Utility.angle.toDeg(xAngleInRadian);
+		var yAngle = Utility.angle.toDeg(yAngleInRadian);
+		var zAngle = Utility.angle.toDeg(zAngleInRadian);
+		var _height = Math.tan(Utility.angle.toRad(camera.fov / 2)) * this.camera.position.z * 2;
+		var _width = _height * width / height;
+		// var _geo = new THREE.CubeGeometry(360, 160, 0);
+		// var _geo1 = new THREE.CubeGeometry(_width, _height, 0);
+		var _geo1 = new THREE.CubeGeometry(_width, _height, 0);
+		var _box1 = new THREE.Mesh(_geo1, new THREE.MeshBasicMaterial({ color: 0xffff00 }));
+		// _box1.rotation.x = xAngleInRadian;
+		// _box1.rotation.y = yAngleInRadian;
+		// debugger
+		// _box1.rotation.z = zAngleInRadian;
+		// var quaternion = new THREE.Quaternion(); // create one and reuse it
+		// var v1 = new THREE.Vector3(1, 0, 0);
+		// var v2 = new THREE.Vector3(1, 2, -1);
+		// quaternion.setFromUnitVectors(v1, v2);
+		// var matrix = new THREE.Matrix4(); // create one and reuse it
+		// matrix.makeRotationFromQuaternion(quaternion);
+		// _geo1.applyMatrix(matrix);
+		this.scene.add(_box1);
+	}
 	private scene_circle_wave() {
 		circleWave(this.scene, {
 			wavesAmount: 12,
@@ -139,18 +137,26 @@ class App {
 			z: true
 		});
 	}
-
 	private helper_wireframe_shader() {
 		var geo = new THREE.BoxBufferGeometry(20, 20, 20);
 		var _mat = SolidWireframeMaterial(geo);
 		this.scene.add(new THREE.Mesh(geo, _mat));
 	}
-
 	private scene_wireframe_multimaterial_obejct() {
 		var geo = new THREE.BoxBufferGeometry(20, 20, 20);
-		var darkMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1, side: THREE.BackSide });
-		var wireframeMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true, wireframeLinewidth: 11, transparent: true });
-		var multiMaterial = [darkMaterial, wireframeMaterial];
+		var darkMaterial = new THREE.MeshBasicMaterial({
+			color: 0xffffff,
+			transparent: true,
+			opacity: 1,
+			side: THREE.BackSide
+		});
+		var wireframeMaterial = new THREE.MeshBasicMaterial({
+			color: 0x333333,
+			wireframe: true,
+			wireframeLinewidth: 11,
+			transparent: true
+		});
+		var multiMaterial = [ darkMaterial, wireframeMaterial ];
 		var outlineMaterial1 = new THREE.MeshBasicMaterial({
 			color: 0xf63a5b,
 			side: THREE.BackSide
@@ -161,11 +167,9 @@ class App {
 		var sphere = THREE.SceneUtils.createMultiMaterialObject(geo.clone(), multiMaterial);
 		this.scene.add(sphere);
 	}
-
 	private scene_multi_prefabs() {
 		multi_prefab(this.scene);
 	}
-
 	private scene_break_shape() {
 		var brickGeo = (this.brickGeo = new THREE.SphereGeometry(20, 20, 20));
 		this.brick = new THREE.Mesh(brickGeo, new THREE.MeshNormalMaterial({ wireframe: false }));
@@ -179,11 +183,9 @@ class App {
 		var currentMesh = new THREE.Mesh(brekedGeo, mat);
 		this.scene.add(currentMesh);
 	}
-
 	private scene_text_to_shape() {
 		_text_animation(this.scene);
 	}
-
 	private scene_transform_prefabs() {
 		var brickGeo = (this.brickGeo = new THREE.CubeGeometry(80, 80, 80));
 		var brick = new THREE.Mesh(brickGeo, new THREE.MeshNormalMaterial({ wireframe: true }));
@@ -197,7 +199,6 @@ class App {
 			yoyo: true
 		});
 	}
-
 	private setup_helpers() {
 		// var axes = new THREE.AxisHelper(50);
 		// this.scene.add(axes);
@@ -205,77 +206,73 @@ class App {
 		// helper.setColors(0x0000ff, 0x808080);
 		// this.scene.add(helper);
 	}
-
 	private config_scene() {
 		this.scene.background = new THREE.Color('#ffffff');
 	}
-
 	private setup_lights() {
-		var light = new THREE.PointLight(0x00ff00, 1, 1000);
+		var light = new THREE.PointLight(0xff00ff, 1, 1000);
 		light.position.set(0, 0, 100);
 		light.castShadow = true;
 		light.shadow.mapSize.width = 1024; // default is 512
 		light.shadow.mapSize.height = 1024;
 		this.scene.add(light);
 	}
-
 	private setup_camera() {
-		this.camera.position.set(100, 100, 0);
+		this.camera.position.set(0, 0, 200);
 		this.camera.lookAt(0, 0, 0);
 		this.scene.add(this.camera);
 	}
-
 	private setup_controls() {
-		// var oldX = this.camera.position.x;
-		// var oldY = this.camera.position.y;
-		// document.body.addEventListener("mousemove", (event) => {
-		// 	var maxAngle = 45;
-		// 	var x = event.clientX;
-		// 	var y = event.clientY;
-		// 	var jahateX, deltaX, rateX;
-		// 	var jahateY, deltaY, rateY;
+		var oldX = this.camera.position.x;
+		var oldY = this.camera.position.y;
+		document.body.addEventListener("mousemove", (event) => {
+			var maxAngle = 45;
+			var x = event.clientX;
+			var y = event.clientY;
+			var jahateX, deltaX, rateX;
+			var jahateY, deltaY, rateY;
 
-		// 	if (x > innerWidth / 2) {
-		// 		jahateX = 1;
-		// 		deltaX = innerWidth - x;
-		// 		rateX = 1 - (deltaX / (innerWidth / 2));
-		// 	} else {
-		// 		jahateX = -1;
-		// 		deltaX = -x;
-		// 		rateX = 1 + (deltaX / (innerWidth / 2));
-		// 	}
+			if (x > innerWidth / 2) {
+				jahateX = 1;
+				deltaX = innerWidth - x;
+				rateX = 1 - (deltaX / (innerWidth / 2));
+			} else {
+				jahateX = -1;
+				deltaX = -x;
+				rateX = 1 + (deltaX / (innerWidth / 2));
+			}
 
-		// 	if (y > innerHeight / 2) {
-		// 		jahateY = -1;
-		// 		deltaY = innerHeight - y;
-		// 		rateY = 1 - (deltaY / (innerHeight / 2));
-		// 	} else {
-		// 		jahateY = 1;
-		// 		deltaY = -y;
-		// 		rateY = 1 + (deltaY / (innerHeight / 2));
-		// 	}
+			if (y > innerHeight / 2) {
+				jahateY = -1;
+				deltaY = innerHeight - y;
+				rateY = 1 - (deltaY / (innerHeight / 2));
+			} else {
+				jahateY = 1;
+				deltaY = -y;
+				rateY = 1 + (deltaY / (innerHeight / 2));
+			}
 
-		// 	var angleX = jahateX * rateX * maxAngle;
-		// 	// this.camera.position.x = oldX - angleX;
-		// 	var angleY = jahateY * rateY * maxAngle;
-		// 	// this.camera.position.y = oldY - angleY;
+			var angleX = jahateX * rateX * maxAngle;
+			// this.camera.position.x = oldX - angleX;
+			var angleY = jahateY * rateY * maxAngle;
+			// this.camera.position.y = oldY - angleY;
 
-		// 	new TWEEN.Tween(this.camera.position)
-		// 		.to({ x: oldX - angleX, y: oldY - angleY }, 1111)
-		// 		.easing(TWEEN.Easing.Linear.None)
-		// 		.onUpdate((frame: any) => {
-		// 			this.camera.position.set(frame.x, frame.y, frame.z);
-		// 			this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-		// 		})
-		// 		.onComplete(() => {
-		// 			this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-		// 		})
-		// 		.start();
+			new TWEEN.Tween(this.camera.position)
+				.to({ x: oldX - angleX, y: oldY - angleY }, 1111)
+				.easing(TWEEN.Easing.Linear.None)
+				.onUpdate((frame: any) => {
+					this.camera.position.set(frame.x, frame.y, frame.z);
+					this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+				})
+				.onComplete(() => {
+					this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+				})
+				.start();
 
-
-		// 	this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-		// });
-
+			this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+		});
+	}
+	private setup_orbit_controls() {
 		this.controls = new THREE.OrbitControls(this.camera, renderer.domElement);
 		this.controls.target.set(0, 0.5, 0);
 		this.controls.rotateSpeed = 1.0;
@@ -283,13 +280,11 @@ class App {
 		this.controls.keyPanSpeed = 0.8;
 		this.controls.enablePan = false;
 	}
-
 	private adjustCanvasSize() {
 		renderer.config;
 		this.camera.aspect = width / height;
 		this.camera.updateProjectionMatrix();
 	}
-
 	private animate() {
 		requestAnimationFrame(() => {
 			this.animate();
@@ -297,7 +292,6 @@ class App {
 		this.reycast();
 		this.render();
 	}
-
 	private render() {
 		renderer.render();
 		this.adjustCanvasSize();
@@ -306,7 +300,6 @@ class App {
 		// this.controls.update();
 		TWEEN.update();
 	}
-
 	private move_camera() {
 		var from = {
 			x: this.camera.position.x,
@@ -331,17 +324,16 @@ class App {
 			})
 			.start();
 	}
-
 	private breakdownGeometry(sourceGeometry: any) {
 		var geom = new THREE.Geometry();
 
 		// Create a Vector3 with positive random values scaled by amount.
-		var randVect = function (amount: any) {
+		var randVect = function(amount: any) {
 			return new THREE.Vector3(Math.random() * amount, Math.random() * amount, Math.random() * amount);
 		};
 
 		// Create and randomly offset a triangle based on 3 original vertices
-		var makeTri = function (geom: any, vertA: any, vertB: any, vertC: any, normal: any) {
+		var makeTri = function(geom: any, vertA: any, vertB: any, vertC: any, normal: any) {
 			var delta = normal.clone().multiplyScalar(0.5).multiply(randVect(1));
 			geom.vertices.push(vertA.clone().add(delta));
 			geom.vertices.push(vertB.clone().add(delta));
@@ -371,7 +363,6 @@ class App {
 		geom.normalsNeedUpdate = true;
 		return geom;
 	}
-
 	private reycast() {
 		var vector = new THREE.Vector3(this.noramlMouse.x, this.noramlMouse.y, 1);
 		vector.unproject(this.camera);
@@ -380,8 +371,8 @@ class App {
 		// create an array containing all objects in the scene with which the ray intersects
 		var intersects = ray.intersectObjects(this.scene.children, true);
 
-		// INTERSECTED = the object in the scene currently closest to the camera 
-		//      and intersected by the Ray projected from the mouse position    
+		// INTERSECTED = the object in the scene currently closest to the camera
+		//      and intersected by the Ray projected from the mouse position
 		// if there is one (or more) intersections
 		if (intersects.length > 0) {
 			// if the closest object intersected is not the currently stored intersection object
@@ -393,7 +384,7 @@ class App {
 				}
 				// store reference to closest object as current intersection object
 				console.log(intersects[0].object.constructor.name);
-				if (intersects[0].object.parent._type == "menuItem") {
+				if (intersects[0].object.parent._type == 'menuItem') {
 					this.INTERSECTED = intersects[0].object;
 					this.selectedMenuItem = this.INTERSECTED.parent.name;
 					// console.log(this.selectedMenuItem)
@@ -404,12 +395,10 @@ class App {
 					this.INTERSECTED.material.color.setHex(0xff0033);
 				}
 			}
-		}
-		else // there are no intersections
-		{
+		} else {
+			// there are no intersections
 			// restore previous intersection object (if it exists) to its original color
-			if (this.INTERSECTED)
-				this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
+			if (this.INTERSECTED) this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
 			// remove previous intersection object reference
 			//     by setting current intersection object to "nothing"
 			this.INTERSECTED = null;

@@ -15,7 +15,7 @@ function Animation() {
       new THREE.TetrahedronGeometry(4),
       new THREE.IcosahedronGeometry(4),
     ];
-    const repeatCount = 20000;
+    const repeatCount = 200;
   
     const geometry = new BAS.MultiPrefabBufferGeometry(prefabs, repeatCount);
   
@@ -133,6 +133,14 @@ function Animation() {
 
 
   export const multi_prefab = function(scene){
+		var light = new THREE.PointLight(0x00ff00, 1, 1000);
+		light.position.set(0, 0, 300);
+		light.castShadow = true;
+		light.shadow.mapSize.width = 1024; // default is 512
+		light.shadow.mapSize.height = 1024;
+		scene.add(light);
+
+
     const animation = new Animation();
     animation.animate(8.0, {ease: Power0.easeIn, repeat:-1, repeatDelay:0.25, yoyo: true});
     scene.add(animation);

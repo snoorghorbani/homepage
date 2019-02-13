@@ -33,9 +33,9 @@ export const _text_animation = function (scene: any) {
         var textAnimation: any = createTextAnimation(font);
         scene.add(textAnimation);
 
-        var light = new THREE.DirectionalLight();
-        light.position.set(0, 0, 1);
-        scene.add(light);
+        // var light = new THREE.DirectionalLight();
+        // light.position.set(0, 0, 1);
+        // scene.add(light);
         debugger;
         var tl = new TimelineMax({
             repeat: -1,
@@ -47,7 +47,7 @@ export const _text_animation = function (scene: any) {
             { animationProgress: 0.95, ease: Power1.easeInOut },
             0
         );
-        tl.fromTo(textAnimation.rotation, 4, { y: 0 }, { y: Math.PI * 2, ease: Power1.easeInOut }, 0);
+        // tl.fromTo(textAnimation.rotation, 4, { y: 0 }, { y: Math.PI * 2, ease: Power1.easeInOut }, 0);
 
         createTweenScrubber(tl);
     })
@@ -56,14 +56,14 @@ export const _text_animation = function (scene: any) {
 function createTextAnimation(font) {
     var geometry = generateTextGeometry('Hello, World', {
         size:22,
-        height:12,
+        height:0,
         font:font,
         weight:'bold',
         style:'normal',
-        curveSegments:24,
-        bevelSize:2,
-        bevelThickness:2,
-        bevelEnabled:true,
+        // curveSegments:24,
+        // bevelSize:2,
+        // bevelThickness:2,
+        // bevelEnabled:true,
         anchor:{x:0.5, y:0.5, z:0.0}
       });
     
@@ -163,6 +163,9 @@ function TextAnimation(textGeometry) {
         flatShading: true,
         side: THREE.DoubleSide,
         transparent: false,
+        uniformValues:{
+          specular: new THREE.Color(0xff00ff),
+        },
         uniforms: {
           uTime: {type: 'f', value: 0}
         },
