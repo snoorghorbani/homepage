@@ -56,21 +56,21 @@ class MenuApp {
 
 
 	private setup_lights() {
-		this.light = new THREE.SpotLight(0xffffff, 1, 500);
+		this.light = new THREE.DirectionalLight(0xffffff, 1, 500);
 		this.light.position.set(50, -50, 50);
 		this.light.castShadow = true;
 		this.light.shadow.mapSize.width = 1024; // default is 512
 		this.light.shadow.mapSize.height = 1024;
-		// this.scene.add(this.light);
+		this.scene.add(this.light);
 		// this.scene.add(
 		// 	new THREE.PointLightHelper(this.light)
 		// )
-		this.light2 = new T.SpotLight(0xffffff, 1, 500);
+		this.light2 = new THREE.DirectionalLight(0xffffff, 1, 500);
 		this.light2.position.set(100, 100, 300);
 		this.light2.castShadow = true;
 		this.light2.shadow.mapSize.width = 1024; // default is 512
 		this.light2.shadow.mapSize.height = 1024;
-		// this.scene.add(
+		this.scene.add(
 		// 	new THREE.PointLightHelper(this.light2)
 		// )
 		// this.scene.add(this.light2);
@@ -126,23 +126,6 @@ class MenuApp {
 	}
 
 	private render() {
-		// this.raycaster.setFromCamera(mouse, this.camera);
-		// var intersects = this.raycaster.intersectObjects(this.scene.children);
-		// if (intersects.length > 0) {
-		// 	if (INTERSECTED != intersects[0].object) {
-		// 		if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
-		// 		INTERSECTED = intersects[0].object;
-		// 		INTERSECTED.rotation.z += .05
-		// 		if (INTERSECTED.material.emissive) {
-		// 			INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-		// 			INTERSECTED.material.emissive.setHex(0xff0000);
-		// 		}
-		// 	}
-		// } else {
-		// 	if (INTERSECTED && INTERSECTED.material && INTERSECTED.material.emissive)
-		// 		if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
-		// 	INTERSECTED = null;
-		// }
 		this.radius += .03
 		this.radius = this.radius % 360;
 		this.light.position.x = Math.sin(this.radius) * 100;

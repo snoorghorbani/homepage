@@ -1,6 +1,7 @@
 import { Utility } from './utility/index';
 import { Helper } from './helper/index';
 import { StateHandler } from './module/state';
+import { Interaction } from './module/interaction';
 
 declare const Power0: any;
 declare const THREE: any;
@@ -28,7 +29,7 @@ interface IConfig {
 export const circleWave = function (scene, config: IConfig) {
 	var _w = window.innerWidth;
 	var _h = window.innerHeight;
-
+	var noramlMouse = { x: 0, y: 0 }
 	var mouseX = _w / 2,
 		mouseY = _h / 2;
 	var mouseAngle = Utility.angle.toRad(90);
@@ -48,6 +49,7 @@ export const circleWave = function (scene, config: IConfig) {
 	var smoothingCoeff = 0.5;
 	var tweenEasing = TWEEN.Easing.Circular.Out;
 
+
 	function buildCircle() {
 		for (var i = 0; i <= config.circleResolution; i++) {
 			var angle = Utility.angle.toRad(i);
@@ -56,7 +58,52 @@ export const circleWave = function (scene, config: IConfig) {
 			var z = 0;
 			circle.geometry.vertices.push(new THREE.Vector3(x, y, z));
 		}
-		scene.add(circle);
+
+		// scene.add(circle);
+
+	}
+
+	function rotateOnMouseMove() {
+		document.body.addEventListener('mousemove', (event) => {
+			noramlMouse.x = event.clientX / window.innerWidth * 2 - 1;
+			noramlMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+
+			var maxAngle = Math.PI/4;
+			var x = event.clientX;
+			var y = event.clientY;
+			var jahateX, deltaX, rateX;
+			var jahateY, deltaY, rateY;
+
+			if (x > innerWidth / 2) {
+				jahateX = 1;
+				deltaX = innerWidth - x;
+				rateX = 1 - (deltaX / (innerWidth / 2));
+			} else {
+				jahateX = -1;
+				deltaX = -x;
+				rateX = 1 + (deltaX / (innerWidth / 2));
+			}
+
+			if (y > innerHeight / 2) {
+				jahateY = -1;
+				deltaY = innerHeight - y;
+				rateY = 1 - (deltaY / (innerHeight / 2));
+			} else {
+				jahateY = 1;
+				deltaY = -y;
+				rateY = 1 + (deltaY / (innerHeight / 2));
+			}
+
+			var angleX = jahateX * rateX * maxAngle;
+			// this.camera.position.x = oldX - angleX;
+			var angleY = jahateY * rateY * maxAngle;
+
+			circles.forEach(i => {
+				i.rotation.x = angleX;
+				i.rotation.y = angleY;
+			})
+		});
 	}
 
 	function updatePoints() {
@@ -194,22 +241,32 @@ export const circleWave = function (scene, config: IConfig) {
 		requestAnimationFrame(loop);
 	}
 
+	function expand(){
+		for (let i = 0; i < 100; i++) {
+			mouseAngle = Math.PI / i;
+			startTweens();
+		}
+	}
+
 	document.body.addEventListener("mousemove", function (event) {
 		mouseAngle = Utility.angle.getAngle(event.pageX, event.pageY);
 		startTweens();
 	});
-
 	buildCircle();
 	loop();
 	cloneCircle();
+	rotateOnMouseMove();
+	setTimeout(() => {
+		expand()
+	}, 6666);
 
 	StateHandler.on("open_menu", () => {
 		config.radius = 150;
-		setTimeout(startTweens,222);
+		setTimeout(startTweens, 222);
 	});
 	StateHandler.on("close_menu", () => {
 		config.radius = 44;
-		setTimeout(startTweens,222);
+		setTimeout(startTweens, 222);
 	});
 
 };

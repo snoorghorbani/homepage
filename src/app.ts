@@ -9,13 +9,15 @@ import { Curve } from './helper/curve';
 import { circleWave as circleWave1 } from './circle-wave.1';
 import { circleWave } from './circle-wave';
 import { Renderer } from './module/renderer';
-import { morph_test } from './morph';
 import './menu-app';
 import { SolidWireframeMaterial } from './helper/wireframe';
-import * as menuItems from './menu-items';
+import * as menuItems from './menu/menu-items';
 import * as Interaction from './module/interaction';
 import { Scene } from 'three';
 import { Utility } from './utility/index';
+import { textHelper } from './helper/text';
+import { Camera } from './module/camera';
+import { backgroundHelper } from './helper/background';
 
 declare const TWEEN: any;
 declare const THREE: any;
@@ -51,6 +53,10 @@ class App {
 	noramlMouse: { x: number; y: number } = { x: -1, y: -1 };
 	constructor() {
 		Interaction.setup(this.camera, renderer);
+		Camera.set(this.camera);
+		backgroundHelper.set(this.scene, this.camera);
+
+
 		document.body.addEventListener('mousemove', (event) => {
 			this.noramlMouse.x = event.clientX / window.innerWidth * 2 - 1;
 			this.noramlMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -67,17 +73,22 @@ class App {
 		this.setup_orbit_controls();
 		// this.setup_helpers();
 		this.setup_camera();
-		this.setup_lights();
+		// this.setup_lights();
 
-		var axesHelper = new THREE.AxesHelper(55);
-		this.scene.add(axesHelper);
-
+		var bg1 = backgroundHelper.add("Hello, Word", 0xfef742, 444);
+		var bg2 = backgroundHelper.add("About Me", 0xff0000, 444, 0, -1);
+		StateHandler.add_to_state("Hello, Word", bg1);
+		StateHandler.add_to_state("About Me", bg2);
+		var helloWord = StateHandler.get("Hello, Word");
+		var aboutMe = StateHandler.get("About Me");
+		this.scene.add(helloWord.object);
+		this.scene.add(aboutMe.object);
 		// this.test_quaternion();
 
 		// var menu = create_menu(this.scene);
-		// morph_test(this.scene);
-		// this.scene_circle_wave();
-		this.scene_text_to_shape();
+		this.scene_circle_wave();
+		textHelper(this.scene, "Hello World");
+		// this.scene_text_to_shape();
 		// this.scene_transform_prefabs();
 		// this.scene_break_shape();
 		// this.scene_multi_prefabs();
@@ -86,7 +97,7 @@ class App {
 		// this.helper_wireframe_shader();
 		// Helper.instansedPrefabs(this.scene);
 		// Curve(this.scene);
-		menuItems.create_menu_items(this.scene,this.camera);
+		menuItems.create_menu_items(this.scene, this.camera);
 		/**
 		 * 
 		 */
@@ -156,7 +167,7 @@ class App {
 			wireframeLinewidth: 11,
 			transparent: true
 		});
-		var multiMaterial = [ darkMaterial, wireframeMaterial ];
+		var multiMaterial = [darkMaterial, wireframeMaterial];
 		var outlineMaterial1 = new THREE.MeshBasicMaterial({
 			color: 0xf63a5b,
 			side: THREE.BackSide
@@ -200,6 +211,9 @@ class App {
 		});
 	}
 	private setup_helpers() {
+		var axesHelper = new THREE.AxesHelper(55);
+		this.scene.add(axesHelper);
+
 		// var axes = new THREE.AxisHelper(50);
 		// this.scene.add(axes);
 		// var helper = new THREE.GridHelper(1000, 10);
@@ -207,10 +221,10 @@ class App {
 		// this.scene.add(helper);
 	}
 	private config_scene() {
-		this.scene.background = new THREE.Color('#ffffff');
+		this.scene.background = new THREE.Color('#000000');
 	}
 	private setup_lights() {
-		var light = new THREE.PointLight(0xff00ff, 1, 1000);
+		var light = new THREE.PointLight(0xffffff, 1, 1000);
 		light.position.set(0, 0, 100);
 		light.castShadow = true;
 		light.shadow.mapSize.width = 1024; // default is 512
@@ -289,7 +303,6 @@ class App {
 		requestAnimationFrame(() => {
 			this.animate();
 		});
-		this.reycast();
 		this.render();
 	}
 	private render() {
@@ -328,12 +341,12 @@ class App {
 		var geom = new THREE.Geometry();
 
 		// Create a Vector3 with positive random values scaled by amount.
-		var randVect = function(amount: any) {
+		var randVect = function (amount: any) {
 			return new THREE.Vector3(Math.random() * amount, Math.random() * amount, Math.random() * amount);
 		};
 
 		// Create and randomly offset a triangle based on 3 original vertices
-		var makeTri = function(geom: any, vertA: any, vertB: any, vertC: any, normal: any) {
+		var makeTri = function (geom: any, vertA: any, vertB: any, vertC: any, normal: any) {
 			var delta = normal.clone().multiplyScalar(0.5).multiply(randVect(1));
 			geom.vertices.push(vertA.clone().add(delta));
 			geom.vertices.push(vertB.clone().add(delta));
@@ -362,47 +375,6 @@ class App {
 		geom.verticesNeedUpdate = true;
 		geom.normalsNeedUpdate = true;
 		return geom;
-	}
-	private reycast() {
-		var vector = new THREE.Vector3(this.noramlMouse.x, this.noramlMouse.y, 1);
-		vector.unproject(this.camera);
-		var ray = new THREE.Raycaster(this.camera.position, vector.sub(this.camera.position).normalize());
-
-		// create an array containing all objects in the scene with which the ray intersects
-		var intersects = ray.intersectObjects(this.scene.children, true);
-
-		// INTERSECTED = the object in the scene currently closest to the camera
-		//      and intersected by the Ray projected from the mouse position
-		// if there is one (or more) intersections
-		if (intersects.length > 0) {
-			// if the closest object intersected is not the currently stored intersection object
-			if (intersects[0].object != this.INTERSECTED) {
-				// restore previous intersection object (if it exists) to its original color
-				if (this.INTERSECTED) {
-					// this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
-					this.INTERSECTED.material.color.setHex(0xff0033);
-				}
-				// store reference to closest object as current intersection object
-				console.log(intersects[0].object.constructor.name);
-				if (intersects[0].object.parent._type == 'menuItem') {
-					this.INTERSECTED = intersects[0].object;
-					this.selectedMenuItem = this.INTERSECTED.parent.name;
-					// console.log(this.selectedMenuItem)
-					// StateHandler.goto("about_me");
-					// store color of closest object (for later restoration)
-					this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex();
-					// set a new color for closest object
-					this.INTERSECTED.material.color.setHex(0xff0033);
-				}
-			}
-		} else {
-			// there are no intersections
-			// restore previous intersection object (if it exists) to its original color
-			if (this.INTERSECTED) this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
-			// remove previous intersection object reference
-			//     by setting current intersection object to "nothing"
-			this.INTERSECTED = null;
-		}
 	}
 }
 

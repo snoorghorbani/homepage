@@ -1,4 +1,4 @@
- import * as menuItemsHandler from './menu-items';
+import * as T from 'three';
 import { StateHandler } from './module/state';
 //  import * as T from 'three';
 declare const PNLTRI: any
@@ -27,7 +27,7 @@ export const create_menu = function (scene: any) {
   geometry.morphTargets[0] = { name: 't1', vertices: hiddenGeometry.vertices };
   geometry.computeMorphNormals();
 
-  var material = new THREE.MeshNormalMaterial({ morphTargets: true, color: 0xffffff, wireframe: false });
+  var material = new T.MeshNormalMaterial({ morphTargets: true, wireframe: false });
 
   var cube = new THREE.Mesh(geometry, material);
   cube.position.set(0, 0, 0);
@@ -85,9 +85,7 @@ export const create_menu = function (scene: any) {
       z: Math.floor(i / 9) * (size) - 10
     }
   }
-
   function open() {
-    StateHandler.goto("open_menu");
     isInOpenMode = true;
     menuItems.forEach((cube, idx) => {
       new TWEEN.Tween(cube.position)
@@ -100,22 +98,19 @@ export const create_menu = function (scene: any) {
       .easing(TWEEN.Easing.Circular.Out)
       .start();
   }
-
   function hover() {
     menuItems.forEach((cube, idx) => {
       new TWEEN.Tween(cube.position)
         .to(getHoverPosition(idx), 666)
         .easing(TWEEN.Easing.Circular.Out)
         .start();
-    })
+    });
     new TWEEN.Tween(group.rotation)
       .to({ y: -Math.PI / 4, x: Math.PI / 4, z: 0 }, 2222)
       .easing(TWEEN.Easing.Circular.Out)
       .start();
   }
-
   function close() {
-    StateHandler.goto("close_menu");
     isInOpenMode = false;
     menuItems.forEach((cube, idx) => {
       new TWEEN.Tween(cube.position)
@@ -129,10 +124,14 @@ export const create_menu = function (scene: any) {
       .start();
   }
   function toggle() {
-    if (isInOpenMode)
-      close()
-    else
-      open()
+    if (isInOpenMode) {
+      StateHandler.goto("close_menu");
+      close();
+    }
+    else {
+      StateHandler.goto("open_menu");
+      open();
+    }
   }
   function relax() {
     if (isInOpenMode)

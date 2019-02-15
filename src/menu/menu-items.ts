@@ -1,6 +1,7 @@
-import { StateHandler } from './module/state';
-import { Interaction } from './module/interaction';
-import { Utility } from './utility/index';
+import { StateHandler } from '../module/state';
+import { Interaction } from '../module/interaction';
+import { Utility } from '../utility/index';
+import { Camera } from '../module/camera';
 
 const interaction = new Interaction();
 
@@ -11,11 +12,11 @@ let scene, camera;
 let menuItems = [];
 let clickableItems = [];
 
-export const create_menu_items = function(_scene: any, _camera: any) {
+export const create_menu_items = function (_scene: any, _camera: any) {
 	scene = _scene;
 	camera = _camera;
 	var loader = new THREE.FontLoader();
-	loader.load('./node_modules/three/examples/fonts/helvetiker_bold.typeface.json', function(font) {
+	loader.load('./node_modules/three/examples/fonts/helvetiker_bold.typeface.json', function (font) {
 		create_menu_item({
 			title: 'Hello, Word',
 			font,
@@ -31,9 +32,19 @@ export const create_menu_items = function(_scene: any, _camera: any) {
 			font,
 			color: 0x669a35
 		});
+		create_menu_item({
+			title: 'My Skills',
+			font,
+			color: 0x669a35
+		});
 	});
 };
-export const open = function() {
+export const open = function () {
+	/** move camera */
+	Camera.save_position();
+	Camera.move_far_right(222, 300);
+
+	/** show items */
 	for (let i = 0; i < menuItems.length; i++) {
 		const item = menuItems[i];
 		new TWEEN.Tween(item.position)
@@ -52,7 +63,8 @@ export const open = function() {
 	}
 	showClickableObjects();
 };
-export const close = function() {
+export const close = function () {
+	Camera.move_to_last_saved();
 	for (let i = 0; i < menuItems.length; i++) {
 		const item = menuItems[i];
 		for (let j = 0; j < item.children.length; j++) {
@@ -66,12 +78,11 @@ export const close = function() {
 	}
 	hiddenClickableObjects();
 };
-export const maximize_item = function(name: string) {
+export const maximize_item = function (name: string) {
 	// StateHandler.goto("close_menu");
 	hiddenClickableObjects();
 	for (let i = 0; i < menuItems.length; i++) {
 		const item = menuItems[i];
-		debugger;
 		if (item.name == name) {
 			new TWEEN.Tween(item.position).to({ y: 0 }, 1111).easing(TWEEN.Easing.Circular.Out).start();
 
@@ -133,7 +144,8 @@ function generateTextGeometry(text: string, font: any) {
 		bevelSize: 0,
 		bevelThickness: 0,
 		bevelEnabled: true,
-		anchor: { x: 0.5, y: 0.5, z: 0.0 }
+		// anchor: { x: 0.5, y: 0.5, z: 0.0 }
+		anchor: { x: 0, y: 0, z: 0.0 }
 	};
 	var geometry = new THREE.TextGeometry(text, params);
 	// var geometry =  new THREE.IcosahedronGeometry(20);
@@ -156,6 +168,7 @@ function create_menu_item({ title, font, color }) {
 	var menuItem = new THREE.Group();
 	menuItem.name = title;
 	menuItem._type = 'menuItem';
+	menuItem.position.x = 444;
 
 	/**
    * title
@@ -171,32 +184,31 @@ function create_menu_item({ title, font, color }) {
 	/**
    * box
    */
-	debugger;
-	var openBoxDim = Utility.position.fullwidthInDistance(camera, camera.position.z + 30);
-	var boxGeoOpen = new THREE.CubeGeometry(
-		Math.abs(titleGeoOpen.boundingBox.min.x) + Math.abs(titleGeoOpen.boundingBox.max.x) + 30,
-		20,
-		0
-	);
-	var boxGeoClose = new THREE.CubeGeometry(0.001, 0, 0);
-	var boxGeoMax = new THREE.CubeGeometry(openBoxDim.width, openBoxDim.height, 0);
-	boxGeoClose.morphTargets[0] = { name: 'open', vertices: boxGeoOpen.vertices };
-	boxGeoClose.morphTargets[1] = { name: 'max', vertices: boxGeoMax.vertices };
-	boxGeoClose.computeMorphNormals();
-	var box = new THREE.Mesh(
-		boxGeoClose,
-		new THREE.MeshBasicMaterial({
-			color: color,
-			wireframe: false,
-			transparent: true,
-			opacity: 1,
-			morphTargets: true
-		})
-	);
-	// var box = new THREE.Mesh(boxGeoClose, new THREE.MeshBasicMaterial({ color: Utility.color.random(), wireframe: false, transparent: true, opacity: 1, morphTargets: true }));
-	box.morphTargetInfluences[0] = 0;
-	box.position.z = -30;
-	menuItem.add(box);
+	// var openBoxDim = Utility.position.fullwidthInDistance(camera, camera.position.z + 30);
+	// var boxGeoOpen = new THREE.CubeGeometry(
+	// 	Math.abs(titleGeoOpen.boundingBox.min.x) + Math.abs(titleGeoOpen.boundingBox.max.x) + 30,
+	// 	20,
+	// 	0
+	// );
+	// var boxGeoClose = new THREE.CubeGeometry(0.001, 0, 0);
+	// var boxGeoMax = new THREE.CubeGeometry(openBoxDim.width, openBoxDim.height, 0);
+	// boxGeoClose.morphTargets[0] = { name: 'open', vertices: boxGeoOpen.vertices };
+	// boxGeoClose.morphTargets[1] = { name: 'max', vertices: boxGeoMax.vertices };
+	// boxGeoClose.computeMorphNormals();
+	// var box = new THREE.Mesh(
+	// 	boxGeoClose,
+	// 	new THREE.MeshBasicMaterial({
+	// 		color: color,
+	// 		wireframe: false,
+	// 		transparent: true,
+	// 		opacity: 1,
+	// 		morphTargets: true
+	// 	})
+	// );
+	// // var box = new THREE.Mesh(boxGeoClose, new THREE.MeshBasicMaterial({ color: Utility.color.random(), wireframe: false, transparent: true, opacity: 1, morphTargets: true }));
+	// box.morphTargetInfluences[0] = 0;
+	// box.position.z = -30;
+	// menuItem.add(box);
 
 	/**
    * clickable
@@ -213,8 +225,8 @@ function create_menu_item({ title, font, color }) {
 		})
 	);
 	clickable.position.z = -30;
-	clickable.onClick = function() {
-		debugger;
+	clickable.visible = false;
+	clickable.onClick = function () {
 		console.log(clickable.parent.name);
 		StateHandler.goto(clickable.parent.name);
 	};

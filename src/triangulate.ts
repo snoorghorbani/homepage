@@ -1,3 +1,5 @@
+import { Utility } from "./utility/index";
+
 // import * as THREE from 'three';
 // import * as BAS from '../node_modules/three-bas/dist/bas.module';
 // import { TimelineMax } from "gsap/TimelineMax";
@@ -56,7 +58,7 @@ export const _text_animation = function (scene: any) {
 function createTextAnimation(font) {
     var geometry = generateTextGeometry('Hello, World', {
         size:22,
-        height:0,
+        height:2,
         font:font,
         weight:'bold',
         style:'normal',
@@ -119,6 +121,8 @@ function TextAnimation(textGeometry) {
     var axis = new THREE.Vector3();
     var angle;
   
+    var points = Utility.geometry.randomPointsInObject(new THREE.CubeGeometry(55,55,55),faceCount);
+
     for (i = 0, i2 = 0, i3 = 0, i4 = 0; i < faceCount; i++, i2 += 6, i3 += 9, i4 += 12) {
       var face = textGeometry.faces[i];
       var centroid = BAS.Utils.computeCentroid(textGeometry, face);
@@ -134,7 +138,8 @@ function TextAnimation(textGeometry) {
       }
   
       // end position
-      var point = utils.fibSpherePoint(i, faceCount, 100);
+      // var point = utils.fibSpherePoint(i, faceCount, 100);
+      var point = points[i];
   
       for (v = 0; v < 9; v += 3) {
         aEndPosition.array[i3 + v    ] = point.x;
@@ -163,9 +168,9 @@ function TextAnimation(textGeometry) {
         flatShading: true,
         side: THREE.DoubleSide,
         transparent: false,
-        uniformValues:{
-          specular: new THREE.Color(0xff00ff),
-        },
+        // uniformValues:{
+        //   specular: new THREE.Color(0xff00ff),
+        // },
         uniforms: {
           uTime: {type: 'f', value: 0}
         },
