@@ -54,6 +54,7 @@ class App {
 	constructor() {
 		Interaction.setup(this.camera, renderer);
 		Camera.set(this.camera);
+		StateHandler.set(this.camera);
 		backgroundHelper.set(this.scene, this.camera);
 
 
@@ -75,19 +76,26 @@ class App {
 		this.setup_camera();
 		// this.setup_lights();
 
+		debugger;
+		StateHandler.create_action("open_menu");
+		StateHandler.create_action("close_menu");
+		var helloWord = StateHandler.create_view("Hello, Word", 0, 0);
+		var aboutMe = StateHandler.create_view("About Me", 0, -1);
+
+
 		var bg1 = backgroundHelper.add("Hello, Word", 0xfef742, 444);
 		var bg2 = backgroundHelper.add("About Me", 0xff0000, 444, 0, -1);
 		StateHandler.add_to_state("Hello, Word", bg1);
 		StateHandler.add_to_state("About Me", bg2);
-		var helloWord = StateHandler.get("Hello, Word");
-		var aboutMe = StateHandler.get("About Me");
+
+		textHelper(helloWord.object, "Hello World");
+		this.scene_circle_wave(helloWord.object);
+
 		this.scene.add(helloWord.object);
 		this.scene.add(aboutMe.object);
 		// this.test_quaternion();
 
 		// var menu = create_menu(this.scene);
-		this.scene_circle_wave();
-		textHelper(this.scene, "Hello World");
 		// this.scene_text_to_shape();
 		// this.scene_transform_prefabs();
 		// this.scene_break_shape();
@@ -130,8 +138,8 @@ class App {
 		// _geo1.applyMatrix(matrix);
 		this.scene.add(_box1);
 	}
-	private scene_circle_wave() {
-		circleWave(this.scene, {
+	private scene_circle_wave(parent) {
+		circleWave(parent, {
 			wavesAmount: 12,
 			wavesHeight: 5,
 			circlesAmount: 33,

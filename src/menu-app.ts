@@ -70,7 +70,7 @@ class MenuApp {
 		this.light2.castShadow = true;
 		this.light2.shadow.mapSize.width = 1024; // default is 512
 		this.light2.shadow.mapSize.height = 1024;
-		this.scene.add(
+		// this.scene.add(
 		// 	new THREE.PointLightHelper(this.light2)
 		// )
 		// this.scene.add(this.light2);

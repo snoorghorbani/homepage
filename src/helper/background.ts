@@ -1,18 +1,11 @@
-import { geometry } from "../utility/geometry";
 import { Utility } from "../utility/index";
 import { StateHandler } from "../module/state";
-
-// import * as T from 'three';
-// import * as BAS from '../node_modules/three-bas/dist/bas.module';
-// import { TimelineMax } from "gsap/TimelineMax";
 
 declare const THREE: any;
 declare const TWEEN: any;
 
 let camera, scene;
-
 const bgs = []
-
 const gap = 100;
 
 const set = function (_scene: any, _camera: any) {
@@ -33,12 +26,12 @@ const add = function (id: string, color: string | number, depth: number, xIndex:
       opacity: 1
     })
   );
-  bg.position.z = -depth;
-  bg.position.x = find_position(xIndex, yIndex, depth).x;
-  bg.position.y = find_position(xIndex, yIndex, depth).y;
-  bg.name = id;
-  bg._coordinate = { x: xIndex, y: yIndex };
-  bg._depth = depth;
+   bg.position.z = -depth;
+  // bg.position.x = find_position(xIndex, yIndex, depth).x;
+  // bg.position.y = find_position(xIndex, yIndex, depth).y;
+   bg.name = id;
+  // bg._coordinate = { x: xIndex, y: yIndex };
+  // bg._depth = depth;
 
   bgs.push(bg);
   // scene.add(bg);
@@ -54,11 +47,8 @@ const find_position = function (xIndex, yIndex, depth) {
 }
 
 const focus_on = function (id: string) {
-  debugger;
-  var _bg = bgs.filter(bg => bg.name == id)[0];
   var c = bgs.filter(bg => bg.name == id)[0]._coordinate;
   bgs.forEach(bg => {
-    debugger;
     var newPosition = find_position(
       bg._coordinate.x - c.x,
       bg._coordinate.y - c.y,
@@ -72,9 +62,9 @@ const focus_on = function (id: string) {
   })
 }
 
-StateHandler.on('About Me', () => {
-  focus_on("About Me");
-});
+// StateHandler.on('About Me', () => {
+//   focus_on("About Me");
+// });
 
 export const backgroundHelper = {
   set,

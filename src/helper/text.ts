@@ -6,7 +6,7 @@ import { geometry } from "../utility/geometry";
 
 declare const THREE: any;
 
-export const textHelper = function (scene: any, text) {
+export const textHelper = function (parent, text) {
 
   var loader = new THREE.FontLoader();
   loader.load('./node_modules/three/examples/fonts/helvetiker_bold.typeface.json', function (font) {
@@ -23,9 +23,9 @@ export const textHelper = function (scene: any, text) {
       anchor: { x: 0.5, y: 0.5, z: 0.0 }
     });
     geometry.computeBoundingBox();
-    
+
     var textMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 0x000000 }))
-    
-    scene.add(textMesh);
+
+    parent.add(textMesh)
   });
 }
