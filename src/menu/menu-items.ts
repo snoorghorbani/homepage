@@ -2,6 +2,7 @@ import { StateHandler } from '../module/state';
 import { Interaction } from '../module/interaction';
 import { Utility } from '../utility/index';
 import { Camera } from '../module/camera';
+import { colors } from '../colors';
 
 const interaction = new Interaction();
 
@@ -177,7 +178,7 @@ function create_menu_item({ title, font, color }) {
 	var titleGeoClose = getVerticesFromCenter(titleGeoOpen);
 	titleGeoClose.morphTargets[0] = { name: 'open', vertices: titleGeoOpen.vertices };
 	titleGeoClose.computeMorphNormals();
-	var title = new THREE.Mesh(titleGeoClose, new THREE.MeshBasicMaterial({ color: 0xffffff, morphTargets: true }));
+	var title = new THREE.Mesh(titleGeoClose, new THREE.MeshBasicMaterial({ color: colors.menuItems, morphTargets: true }));
 	title.morphTargetInfluences[0] = 0;
 	menuItem.add(title);
 

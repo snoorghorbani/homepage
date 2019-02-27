@@ -24,7 +24,7 @@ export const textHelper = function (parent, text) {
     });
     geometry.computeBoundingBox();
 
-    var textMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 0x000000 }))
+    var textMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 0x143340 }))
 
     parent.add(textMesh)
   });

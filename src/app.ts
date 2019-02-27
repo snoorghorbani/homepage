@@ -18,6 +18,7 @@ import { Utility } from './utility/index';
 import { textHelper } from './helper/text';
 import { Camera } from './module/camera';
 import { backgroundHelper } from './helper/background';
+import { colors } from './colors';
 
 declare const TWEEN: any;
 declare const THREE: any;
@@ -83,8 +84,8 @@ class App {
 		var aboutMe = StateHandler.create_view("About Me", 0, -1);
 
 
-		var bg1 = backgroundHelper.add("Hello, Word", 0xfef742, 444);
-		var bg2 = backgroundHelper.add("About Me", 0xff0000, 444, 0, -1);
+		var bg1 = backgroundHelper.add("Hello, Word", colors.secondery, 444);
+		var bg2 = backgroundHelper.add("About Me", colors.main, 444, 0, -1);
 		StateHandler.add_to_state("Hello, Word", bg1);
 		StateHandler.add_to_state("About Me", bg2);
 
@@ -146,7 +147,7 @@ class App {
 			circlesSpacing: 2,
 			lineWidth: 1,
 			opacityCoeff: 0.4,
-			color: '#fc1b6a',
+			color: colors.forground as any,
 			dev: true,
 			radius: 66,
 			colorCoeff: 1,
@@ -229,7 +230,7 @@ class App {
 		// this.scene.add(helper);
 	}
 	private config_scene() {
-		this.scene.background = new THREE.Color('#000000');
+		this.scene.background = new THREE.Color(colors.background);
 	}
 	private setup_lights() {
 		var light = new THREE.PointLight(0xffffff, 1, 1000);
