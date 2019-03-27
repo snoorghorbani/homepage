@@ -17,7 +17,13 @@ export const CircularCursor = function(_scene: any, _camera: any) {
 
 	var geometry = new THREE.CircleGeometry(5, 32);
 	var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+	material.transparent = true;
+	material.blending = THREE.AdditiveBlending;
+	// material.blendEquation = THREE.AddEquation; //default
+	// material.blendSrc = THREE.SrcAlphaFactor; //default
+	// material.blendDst = THREE.OneMinusSrcAlphaFactor; //default
 	var circle = new THREE.Mesh(geometry, material);
+	circle.position.z = 100;
 	scene.add(circle);
 	circle.onMousemove = function(a, b) {
 		debugger;
@@ -29,12 +35,11 @@ export const CircularCursor = function(_scene: any, _camera: any) {
 		'mousemove',
 		(event) => {
 			debugger;
-			const fullDim = Utility.position.fullwidthInDistance(camera);
+			const fullDim = Utility.position.fullwidthInDistance(camera, camera.position.z - 100);
 
-			const x = ((fullDim.width / 2) * (event.clientX / window.innerWidth * 2))-(fullDim.width / 2);
-			const y = ((fullDim.height / 2) * (-(event.clientY / window.innerHeight) * 2)) + (fullDim.height/2);
-			console.log(x, y);
-			circle.position.set(x, y, 0);
+			const x = fullDim.width / 2 * (event.clientX / window.innerWidth * 2) - fullDim.width / 2;
+			const y = fullDim.height / 2 * (-(event.clientY / window.innerHeight) * 2) + fullDim.height / 2;
+			circle.position.set(x, y, 100);
 		},
 		false
 	);

@@ -72,7 +72,7 @@ class App {
 		});
 		this.config_scene();
 		// this.setup_controls();
-		this.setup_orbit_controls();
+		// this.setup_orbit_controls();
 		// this.setup_helpers();
 		this.setup_camera();
 		// this.setup_lights();
