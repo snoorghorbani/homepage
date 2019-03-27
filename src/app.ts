@@ -19,6 +19,7 @@ import { textHelper } from './helper/text';
 import { Camera } from './module/camera';
 import { backgroundHelper } from './helper/background';
 import { colors } from './colors';
+import { CircularCursor } from './helper/cursor';
 
 declare const TWEEN: any;
 declare const THREE: any;
@@ -58,7 +59,6 @@ class App {
 		StateHandler.set(this.camera);
 		backgroundHelper.set(this.scene, this.camera);
 
-
 		document.body.addEventListener('mousemove', (event) => {
 			this.noramlMouse.x = event.clientX / window.innerWidth * 2 - 1;
 			this.noramlMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -78,22 +78,23 @@ class App {
 		// this.setup_lights();
 
 		debugger;
-		StateHandler.create_action("open_menu");
-		StateHandler.create_action("close_menu");
-		var helloWord = StateHandler.create_view("Hello, Word", 0, 0);
-		var aboutMe = StateHandler.create_view("About Me", 0, -1);
+		StateHandler.create_action('open_menu');
+		StateHandler.create_action('close_menu');
+		var helloWord = StateHandler.create_view('Hello, Word', 0, 0);
+		var aboutMe = StateHandler.create_view('About Me', 0, -1);
 
+		var bg1 = backgroundHelper.add('Hello, Word', colors.secondery, 444);
+		var bg2 = backgroundHelper.add('About Me', colors.main, 444, 0, -1);
+		StateHandler.add_to_state('Hello, Word', bg1);
+		StateHandler.add_to_state('About Me', bg2);
 
-		var bg1 = backgroundHelper.add("Hello, Word", colors.secondery, 444);
-		var bg2 = backgroundHelper.add("About Me", colors.main, 444, 0, -1);
-		StateHandler.add_to_state("Hello, Word", bg1);
-		StateHandler.add_to_state("About Me", bg2);
-
-		textHelper(helloWord.object, "Hello World");
+		textHelper(helloWord.object, 'Hello World');
 		this.scene_circle_wave(helloWord.object);
 
 		this.scene.add(helloWord.object);
 		this.scene.add(aboutMe.object);
+
+		CircularCursor(this.scene, this.camera);
 		// this.test_quaternion();
 
 		// var menu = create_menu(this.scene);
@@ -114,9 +115,12 @@ class App {
 	}
 
 	private test_quaternion() {
-		var xAngleInRadian = this.camera.position.z === 0 ? 0 : Math.atan(this.camera.position.y / this.camera.position.z);
-		var yAngleInRadian = this.camera.position.x === 0 ? 0 : Math.atan(this.camera.position.z / this.camera.position.x);
-		var zAngleInRadian = this.camera.position.y === 0 ? 0 : Math.atan(this.camera.position.x / this.camera.position.y);
+		var xAngleInRadian =
+			this.camera.position.z === 0 ? 0 : Math.atan(this.camera.position.y / this.camera.position.z);
+		var yAngleInRadian =
+			this.camera.position.x === 0 ? 0 : Math.atan(this.camera.position.z / this.camera.position.x);
+		var zAngleInRadian =
+			this.camera.position.y === 0 ? 0 : Math.atan(this.camera.position.x / this.camera.position.y);
 		var xAngle = Utility.angle.toDeg(xAngleInRadian);
 		var yAngle = Utility.angle.toDeg(yAngleInRadian);
 		var zAngle = Utility.angle.toDeg(zAngleInRadian);
@@ -176,7 +180,7 @@ class App {
 			wireframeLinewidth: 11,
 			transparent: true
 		});
-		var multiMaterial = [darkMaterial, wireframeMaterial];
+		var multiMaterial = [ darkMaterial, wireframeMaterial ];
 		var outlineMaterial1 = new THREE.MeshBasicMaterial({
 			color: 0xf63a5b,
 			side: THREE.BackSide
@@ -248,7 +252,7 @@ class App {
 	private setup_controls() {
 		var oldX = this.camera.position.x;
 		var oldY = this.camera.position.y;
-		document.body.addEventListener("mousemove", (event) => {
+		document.body.addEventListener('mousemove', (event) => {
 			var maxAngle = 45;
 			var x = event.clientX;
 			var y = event.clientY;
@@ -258,21 +262,21 @@ class App {
 			if (x > innerWidth / 2) {
 				jahateX = 1;
 				deltaX = innerWidth - x;
-				rateX = 1 - (deltaX / (innerWidth / 2));
+				rateX = 1 - deltaX / (innerWidth / 2);
 			} else {
 				jahateX = -1;
 				deltaX = -x;
-				rateX = 1 + (deltaX / (innerWidth / 2));
+				rateX = 1 + deltaX / (innerWidth / 2);
 			}
 
 			if (y > innerHeight / 2) {
 				jahateY = -1;
 				deltaY = innerHeight - y;
-				rateY = 1 - (deltaY / (innerHeight / 2));
+				rateY = 1 - deltaY / (innerHeight / 2);
 			} else {
 				jahateY = 1;
 				deltaY = -y;
-				rateY = 1 + (deltaY / (innerHeight / 2));
+				rateY = 1 + deltaY / (innerHeight / 2);
 			}
 
 			var angleX = jahateX * rateX * maxAngle;
@@ -350,12 +354,12 @@ class App {
 		var geom = new THREE.Geometry();
 
 		// Create a Vector3 with positive random values scaled by amount.
-		var randVect = function (amount: any) {
+		var randVect = function(amount: any) {
 			return new THREE.Vector3(Math.random() * amount, Math.random() * amount, Math.random() * amount);
 		};
 
 		// Create and randomly offset a triangle based on 3 original vertices
-		var makeTri = function (geom: any, vertA: any, vertB: any, vertC: any, normal: any) {
+		var makeTri = function(geom: any, vertA: any, vertB: any, vertC: any, normal: any) {
 			var delta = normal.clone().multiplyScalar(0.5).multiply(randVect(1));
 			geom.vertices.push(vertA.clone().add(delta));
 			geom.vertices.push(vertB.clone().add(delta));

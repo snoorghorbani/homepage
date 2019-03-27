@@ -24,7 +24,7 @@ export class Interaction {
 
 	constructor() {
 		document.addEventListener('mousedown', this.onDocumentMouseDown.bind(this), false);
-		document.addEventListener('mousemove', this.onMousemove.bind(this), false);
+		document.addEventListener('mousemove', this.onDocumentMouseMove.bind(this), false);
 	}
 
 	onClick(mesh: any) {
@@ -103,6 +103,26 @@ export class Interaction {
 				return
 			}
 			intersects[0].object.onClick();
+		}
+
+	}
+	private onDocumentMouseMove(event) {
+		if (!(config.camera && config.renderer)) return;
+		event.preventDefault();
+
+		this.mouse.x = (event.clientX / config.renderer.domElement.clientWidth) * 2 - 1;
+		this.mouse.y = - (event.clientY / config.renderer.domElement.clientHeight) * 2 + 1;
+
+		this.raycaster.setFromCamera(this.mouse, config.camera);
+
+		var intersects = this.raycaster.intersectObjects(this.meshObjects);
+
+		if (intersects.length > 0) {
+			if (!intersects[0].object.onMousemove) {
+				debugger;
+				return
+			}
+			intersects[0].object.onMousemove();
 		}
 
 	}
