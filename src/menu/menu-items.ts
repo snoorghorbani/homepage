@@ -36,7 +36,7 @@ export const create_menu_items = function (_scene: any, _camera: any) {
 		// 	color: 0x669a35
 		// });
 		create_menu_item({
-			id: 'About Me',
+			id: 'We Know',
 			title: 'We Know',
 			font,
 			color: 0x669a35
@@ -250,14 +250,14 @@ function getOpenedMenuItemPosition(i: number) {
 	return i * -40 + 50;
 }
 
-StateHandler.on('open_menu', open);
-StateHandler.on('close_menu', close);
-StateHandler.on('About Me', () => {
-	maximize_item('About Me');
-});
-StateHandler.on('Hello, Word', () => {
-	maximize_item('Hello, Word');
-});
-StateHandler.on('My Experiences', () => {
-	maximize_item('My Experiences');
-});
+// StateHandler.on('open_menu', open);
+// StateHandler.on('close_menu', close);
+// StateHandler.on('About Me', () => {
+// 	maximize_item('About Me');
+// });
+// StateHandler.on('Hello, Word', () => {
+// 	maximize_item('Hello, Word');
+// });
+// StateHandler.on('My Experiences', () => {
+// 	maximize_item('My Experiences');
+// });

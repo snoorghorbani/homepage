@@ -33,8 +33,8 @@ export const CircularCursor = function (_scene: any, _camera: any) {
 	material.blendDst = THREE.OneMinusSrcAlphaFactor; //default
 
 	var circle = new THREE.Mesh(geometry, material);
-	circle.position.z = 100;
-	scene.add(circle);
+	circle.position.z = -100;
+	camera.add(circle);
 	circle.onMousemove = function (a, b) {
 		// debugger;
 	};
@@ -44,16 +44,16 @@ export const CircularCursor = function (_scene: any, _camera: any) {
 	document.addEventListener(
 		'mousemove',
 		(event) => {
-			const distanceFromCamera = camera.position.z - 100
-			const fullDim = Utility.position.fullwidthInDistance(camera, camera.position.z - distanceFromCamera);
+			const distanceFromCamera = 100
+			const fullDim = Utility.position.fullwidthInDistance(camera, distanceFromCamera);
 			console.log(fullDim);
 			console.log(camera.position.z)
-			const x = fullDim.width / 2 
-				* (event.clientX / window.innerWidth * 2-1) 
-				// - fullDim.width / 2
-				+ camera.position.x;
+			const x = fullDim.width / 2
+				* (event.clientX / window.innerWidth * 2 - 1)
+			// - fullDim.width / 2
+			// + camera.position.x;
 			const y = fullDim.height / 2 * (-(event.clientY / window.innerHeight) * 2) + fullDim.height / 2;
-			circle.position.set(x, y,  distanceFromCamera);
+			circle.position.set(x, y, -distanceFromCamera);
 		},
 		false
 	);
@@ -88,10 +88,10 @@ export const CircularCursor = function (_scene: any, _camera: any) {
 
 	// buildUp().start();
 
-	StateHandler.on('bold_cursor', ()=>{
+	StateHandler.on('bold_cursor', () => {
 		buildUp().start();
 	});
-	StateHandler.on('normal_cursor', ()=>{
+	StateHandler.on('normal_cursor', () => {
 		buildDown().start();
 	});
 

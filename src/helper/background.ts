@@ -13,7 +13,7 @@ const set = function (_scene: any, _camera: any) {
   camera = _camera;
 }
 
-const add = function (id: string, color: string | number, depth: number, xIndex: number = 0, yIndex: number = 0) {
+const add = function (id: string, color: string | number, depth: number) {
   var openBoxDim = Utility.position.fullwidthInDistance(camera, camera.position.z + depth);
 
   var geo = new THREE.CubeGeometry(openBoxDim.width, openBoxDim.height, 0);

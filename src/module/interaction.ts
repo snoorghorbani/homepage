@@ -99,7 +99,6 @@ export class Interaction {
 
 		if (intersects.length > 0) {
 			if (!intersects[0].object.onClick) {
-				debugger;
 				return
 			}
 			intersects[0].object.onClick();

@@ -126,11 +126,9 @@ export const create_menu = function (scene: any) {
   function toggle() {
     if (isInOpenMode) {
       StateHandler.goto("close_menu");
-      close();
     }
     else {
       StateHandler.goto("open_menu");
-      open();
     }
   }
   function relax() {
@@ -139,6 +137,15 @@ export const create_menu = function (scene: any) {
     else
       close();
   }
+
+StateHandler.on("close_menu",()=>{
+  isInOpenMode = false;
+  close()
+})
+StateHandler.on("open_menu",()=>{
+  isInOpenMode = true;
+  open();
+})
 
   return {
     open,

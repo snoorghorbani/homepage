@@ -12,6 +12,8 @@ import { Renderer } from './module/renderer';
 import './menu-app';
 import { SolidWireframeMaterial } from './helper/wireframe';
 import * as menuItems from './menu/menu-items';
+import * as menuItemsHtml from './menu/menu-items-html';
+console.log(menuItemsHtml)
 import * as Interaction from './module/interaction';
 import { Scene } from 'three';
 import { Utility } from './utility/index';
@@ -77,24 +79,27 @@ class App {
 		this.setup_camera();
 		// this.setup_lights();
 
-		debugger;
 		StateHandler.create_action('open_menu');
 		StateHandler.create_action('bold_cursor');
 		StateHandler.create_action('normal_cursor');
 		StateHandler.create_action('close_menu');
 		var helloWord = StateHandler.create_view('Hello, Word', 0, 0);
 		var aboutMe = StateHandler.create_view('About Me', 0, -1);
+		var WeKnow = StateHandler.create_view('We Know', 0, -2);
 
 		var bg1 = backgroundHelper.add('Hello, Word', colors.secondery, 444);
-		var bg2 = backgroundHelper.add('About Me', colors.main, 444, 0, -1);
+		var bg2 = backgroundHelper.add('About Me', colors.main, 444);
+		var bg3 = backgroundHelper.add('We Know', colors.secondery, 444);
 		StateHandler.add_to_state('Hello, Word', bg1);
 		StateHandler.add_to_state('About Me', bg2);
+		StateHandler.add_to_state('We Know', bg3);
 
 		textHelper(helloWord.object, 'Hello World');
 		this.scene_circle_wave(helloWord.object);
 
 		this.scene.add(helloWord.object);
 		this.scene.add(aboutMe.object);
+		this.scene.add(WeKnow.object);
 
 		CircularCursor(this.scene, this.camera);
 		// this.test_quaternion();

@@ -6,36 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Webpack_threejs</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            /* cursor: none !important; */
-        }
-
-        body {
-            overflow: hidden;
-        }
-
-        #mainCanvas {
-            position: absolute;
-            height: 100%;
-            width: 100%;
-        }
-        #menuCanvas {
-            position: absolute;
-            height: 200px;
-            width: 200px;
-            top:0;
-            right: 0;
-            z-index: 2;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="./style.css">
 </head>
 
 <body>
+    <div id="html-container" class="closed-menu">
+        <div id="menu">
+            <div class="menu-items" id="Hello, Word">
+                <div class="short">Hello</div>
+                <div class="typer"></div>
+                <div class="description">World</div>
+            </div>
+            <div class="menu-items" id="About Me">
+                <div class="short">We Are</div>
+                <div class="typer"></div>
+                <div class="description">some one like you</div>
+            </div>
+            <div class="menu-items" id="We Know">
+                <div class="short">We Know</div>
+                <div class="typer"></div>
+                <div class="description">some some skills like ...</div>
+            </div>
+        </div>
+    </div>
+
     <canvas id="mainCanvas"></canvas>
     <canvas id="menuCanvas"></canvas>
+
     <!-- <script src="./src/_lib/TweenMax.min.js"></script> -->
     <script src="./node_modules/gsap/src/uncompressed/TweenMax.js"></script>
     <script src="./node_modules/@tweenjs//tween.js/src/Tween.js"></script>
