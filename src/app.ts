@@ -79,6 +79,8 @@ class App {
 
 		debugger;
 		StateHandler.create_action('open_menu');
+		StateHandler.create_action('bold_cursor');
+		StateHandler.create_action('normal_cursor');
 		StateHandler.create_action('close_menu');
 		var helloWord = StateHandler.create_view('Hello, Word', 0, 0);
 		var aboutMe = StateHandler.create_view('About Me', 0, -1);

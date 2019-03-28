@@ -3,6 +3,7 @@ import { OrbitControls } from './js/controls/OrbitControls';
 import { _text_animation } from './triangulate';
 import { create_menu } from './menu';
 import { Renderer } from './module/renderer';
+import { StateHandler } from './module/state';
 
 
 let renderer;
@@ -88,6 +89,7 @@ class MenuApp {
 	}
 	private _handleMenu() {
 		renderer.domElement.addEventListener('mouseenter', (event) => {
+			StateHandler.goto("bold_cursor");
 			this.menu.hover();
 		}, false);
 		renderer.domElement.addEventListener('click', (event) => {
@@ -95,6 +97,7 @@ class MenuApp {
 			// this.maximize()
 		}, false);
 		renderer.domElement.addEventListener('mouseout', (event) => {
+			StateHandler.goto("normal_cursor");
 			this.menu.relax();
 		}, false);
 	}

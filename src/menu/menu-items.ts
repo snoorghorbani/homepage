@@ -19,22 +19,25 @@ export const create_menu_items = function (_scene: any, _camera: any) {
 	var loader = new THREE.FontLoader();
 	loader.load('./node_modules/three/examples/fonts/helvetiker_bold.typeface.json', function (font) {
 		create_menu_item({
-			title: 'Hello, Word',
+			id: 'Hello, Word',
+			title: 'Hello',
 			font,
 			color: 0x275c6b
 		});
 		create_menu_item({
-			title: 'About Me',
+			id: 'About Me',
+			title: 'We Are',
 			font,
 			color: 0xaca53b
 		});
+		// create_menu_item({
+		// 	title: 'My Experiences',
+		// 	font,
+		// 	color: 0x669a35
+		// });
 		create_menu_item({
-			title: 'My Experiences',
-			font,
-			color: 0x669a35
-		});
-		create_menu_item({
-			title: 'My Skills',
+			id: 'About Me',
+			title: 'We Know',
 			font,
 			color: 0x669a35
 		});
@@ -164,10 +167,10 @@ function generateTextGeometry(text: string, font: any) {
 
 	return geometry;
 }
-function create_menu_item({ title, font, color }) {
+function create_menu_item({ title, id, font, color }) {
 	const index = menuItems.length;
 	var menuItem = new THREE.Group();
-	menuItem.name = title;
+	menuItem.name = id;
 	menuItem._type = 'menuItem';
 	menuItem.position.x = 444;
 
@@ -178,9 +181,9 @@ function create_menu_item({ title, font, color }) {
 	var titleGeoClose = getVerticesFromCenter(titleGeoOpen);
 	titleGeoClose.morphTargets[0] = { name: 'open', vertices: titleGeoOpen.vertices };
 	titleGeoClose.computeMorphNormals();
-	var title = new THREE.Mesh(titleGeoClose, new THREE.MeshBasicMaterial({ color: colors.menuItems, morphTargets: true }));
-	title.morphTargetInfluences[0] = 0;
-	menuItem.add(title);
+	var id = new THREE.Mesh(titleGeoClose, new THREE.MeshBasicMaterial({ color: colors.menuItems, morphTargets: true }));
+	id.morphTargetInfluences[0] = 0;
+	menuItem.add(id);
 
 	/**
    * box
@@ -228,10 +231,13 @@ function create_menu_item({ title, font, color }) {
 	clickable.position.z = -30;
 	clickable.visible = false;
 	clickable.onClick = function () {
-		console.log(clickable.parent.name);
 		StateHandler.goto(clickable.parent.name);
 	};
 	interaction.onClick(clickable);
+	clickable.onMousemove = function () {
+		StateHandler.goto("bold_cursor");
+	};
+	interaction.onMousemove(clickable);
 	clickableItems.push(clickable);
 	menuItem.add(clickable);
 

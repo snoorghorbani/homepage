@@ -65,7 +65,6 @@ class _Renderer {
 
 const renederes: { [name: string]: _Renderer } = {}
 
-export const Renderer = function (name: string, { width, height }) {
-
-	return (renederes[name]) ? (renederes[name]) : renederes[name] = new _Renderer(name, { width, height })
+export const Renderer = function (name: string, params?: { width: number, height: number }) {
+	return (renederes[name]) ? (renederes[name]) : renederes[name] = new _Renderer(name, params)
 }
