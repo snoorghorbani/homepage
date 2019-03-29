@@ -41,7 +41,7 @@ class MenuApp {
 		});
 		this.setup_camera();
 		this.setup_lights();
-		this.setup_controls()
+		// this.setup_controls()
 		// var axesHelper = new THREE.Mesh
 		// 	(new THREE.SphereGeometry(20, 22, 22),
 		// 		new THREE.MeshNormalMaterial({ wireframe: false }));

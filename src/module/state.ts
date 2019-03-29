@@ -73,7 +73,7 @@ function goto(stateName: string) {
 				);
 				new TWEEN.Tween(state.object.position)
 					.to(newPosition, 1111)
-					.easing(TWEEN.Easing.Circular.Out)
+					.easing(TWEEN.Easing.Circular.InOut)
 					.start();
 			}
 		}
